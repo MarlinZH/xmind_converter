@@ -1,0 +1,541 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="6c87da87-5280-4775-8b6e-8a419b65ab70" name="Changes" comment="Optomized Relationships for CareerPaths import" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ChangesViewManager" show_ignored="true" />
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Python Script" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="ROOT_SYNC" value="DONT_SYNC" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;history&quot;: [
+    {
+      &quot;state&quot;: &quot;OPEN&quot;
+    }
+  ],
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;
+  }
+}</component>
+  <component name="GitSEFilterConfiguration">
+    <file-type-list>
+      <filtered-out-file-type name="LOCAL_BRANCH" />
+      <filtered-out-file-type name="REMOTE_BRANCH" />
+      <filtered-out-file-type name="TAG" />
+      <filtered-out-file-type name="COMMIT_BY_MESSAGE" />
+    </file-type-list>
+  </component>
+  <component name="GithubPullRequestsUISettings">
+    <option name="selectedUrlAndAccountId">
+      <UrlAndAccount>
+        <option name="accountId" value="1e46fd16-2ed5-48f0-b5c6-e03028c53c11" />
+        <option name="url" value="https://github.com/MarlinZH/RESUME_GENERATOR.git" />
+      </UrlAndAccount>
+    </option>
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="CurrentFile" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;customColor&quot;: &quot;&quot;,
+  &quot;associatedIndex&quot;: 4
+}</component>
+  <component name="ProjectId" id="21fMwU73urtyoE6gnhaxwivBd7z" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Python.Gmail_Job_Emails.executor&quot;: &quot;Run&quot;,
+    &quot;Python.Gmail_Server_Auth.executor&quot;: &quot;Run&quot;,
+    &quot;Python.Interface.executor&quot;: &quot;Run&quot;,
+    &quot;Python.Interface2.0.executor&quot;: &quot;Run&quot;,
+    &quot;Python.MindMaps_to_Neo4j.executor&quot;: &quot;Run&quot;,
+    &quot;Python.Notion_DB_Connection.executor&quot;: &quot;Run&quot;,
+    &quot;Python.Opportunity_Crawler.executor&quot;: &quot;Run&quot;,
+    &quot;Python.Prompt_optimized.executor&quot;: &quot;Run&quot;,
+    &quot;Python.XMIND_Updater.executor&quot;: &quot;Run&quot;,
+    &quot;Python.XMind_Maps_to_Dict.executor&quot;: &quot;Run&quot;,
+    &quot;Python.XMind_Sort_Gmail.executor&quot;: &quot;Run&quot;,
+    &quot;Python.XMind_To Notion.executor&quot;: &quot;Run&quot;,
+    &quot;Python.XMind_To_Neo4j.executor&quot;: &quot;Run&quot;,
+    &quot;Python.XMind_to_Neo4j.executor&quot;: &quot;Run&quot;,
+    &quot;Python.blub.executor&quot;: &quot;Run&quot;,
+    &quot;Python.theory.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/Froap/_DEV/OSOM&quot;,
+    &quot;run.code.analysis.last.selected.profile&quot;: &quot;aDefault&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable&quot;
+  }
+}</component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\Froap\_DEV\OSOM\.Secrets" />
+    </key>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-python-sdk-eebebe6c2be4-d3b881c8e49f-com.jetbrains.pycharm.community.sharedIndexes.bundled-PC-233.15325.20" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="6c87da87-5280-4775-8b6e-8a419b65ab70" name="Changes" comment="" />
+      <created>1638327926903</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1638327926903</updated>
+    </task>
+    <task id="LOCAL-00001" summary="GIT PUSH">
+      <created>1675988488861</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1675988488861</updated>
+    </task>
+    <task id="LOCAL-00002" summary="git clone https://github.com/xmindltd/xmind-sdk-python.git">
+      <created>1676253819399</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1676253819399</updated>
+    </task>
+    <task id="LOCAL-00003" summary="git clone https://github.com/xmindltd/xmind-sdk-python.git">
+      <created>1679439886253</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1679439886253</updated>
+    </task>
+    <task id="LOCAL-00004" summary="git clone https://github.com/xmindltd/xmind-sdk-python.git">
+      <created>1679444760803</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1679444760804</updated>
+    </task>
+    <task id="LOCAL-00005" summary="git clone https://github.com/xmindltd/xmind-sdk-python.git">
+      <created>1679542316281</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1679542316282</updated>
+    </task>
+    <task id="LOCAL-00006" summary="git clone https://github.com/xmindltd/xmind-sdk-python.git">
+      <created>1679871901443</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1679871901443</updated>
+    </task>
+    <task id="LOCAL-00007" summary="git clone https://github.com/xmindltd/xmind-sdk-python.git">
+      <created>1679956743345</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1679956743345</updated>
+    </task>
+    <task id="LOCAL-00008" summary="git clone https://github.com/xmindltd/xmind-sdk-python.git">
+      <created>1680226479223</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1680226479223</updated>
+    </task>
+    <task id="LOCAL-00009" summary="git clone https://github.com/xmindltd/xmind-sdk-python.git">
+      <created>1680487441650</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1680487441650</updated>
+    </task>
+    <task id="LOCAL-00010" summary="git clone https://github.com/xmindltd/xmind-sdk-python.git">
+      <created>1680566610540</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1680566610540</updated>
+    </task>
+    <task id="LOCAL-00011" summary="git clone https://github.com/xmindltd/xmind-sdk-python.git">
+      <created>1680631801188</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1680631801188</updated>
+    </task>
+    <task id="LOCAL-00012" summary="git clone https://github.com/xmindltd/xmind-sdk-python.git">
+      <created>1680820357268</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1680820357268</updated>
+    </task>
+    <task id="LOCAL-00013" summary="git clone https://github.com/xmindltd/xmind-sdk-python.git">
+      <created>1681096102873</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1681096102873</updated>
+    </task>
+    <task id="LOCAL-00014" summary="git clone https://github.com/xmindltd/xmind-sdk-python.git">
+      <created>1681096357434</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1681096357434</updated>
+    </task>
+    <task id="LOCAL-00015" summary="git clone https://github.com/xmindltd/xmind-sdk-python.git">
+      <created>1681096496061</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1681096496061</updated>
+    </task>
+    <task id="LOCAL-00016" summary="git clone https://github.com/xmindltd/xmind-sdk-python.git">
+      <created>1681962324127</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1681962324127</updated>
+    </task>
+    <task id="LOCAL-00017" summary="git clone https://github.com/xmindltd/xmind-sdk-python.git">
+      <created>1681962442886</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1681962442886</updated>
+    </task>
+    <task id="LOCAL-00018" summary="git clone https://github.com/xmindltd/xmind-sdk-python.git">
+      <created>1681963254588</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1681963254588</updated>
+    </task>
+    <task id="LOCAL-00019" summary="git clone https://github.com/xmindltd/xmind-sdk-python.git">
+      <created>1682030055493</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1682030055493</updated>
+    </task>
+    <task id="LOCAL-00020" summary="git clone https://github.com/xmindltd/xmind-sdk-python.git">
+      <created>1682041327704</created>
+      <option name="number" value="00020" />
+      <option name="presentableId" value="LOCAL-00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1682041327704</updated>
+    </task>
+    <task id="LOCAL-00021" summary="git clone https://github.com/xmindltd/xmind-sdk-python.git">
+      <created>1682041449910</created>
+      <option name="number" value="00021" />
+      <option name="presentableId" value="LOCAL-00021" />
+      <option name="project" value="LOCAL" />
+      <updated>1682041449910</updated>
+    </task>
+    <task id="LOCAL-00022" summary="git clone https://github.com/xmindltd/xmind-sdk-python.git">
+      <created>1682043526994</created>
+      <option name="number" value="00022" />
+      <option name="presentableId" value="LOCAL-00022" />
+      <option name="project" value="LOCAL" />
+      <updated>1682043526994</updated>
+    </task>
+    <task id="LOCAL-00023" summary="git clone https://github.com/xmindltd/xmind-sdk-python.git">
+      <created>1682043745561</created>
+      <option name="number" value="00023" />
+      <option name="presentableId" value="LOCAL-00023" />
+      <option name="project" value="LOCAL" />
+      <updated>1682043745561</updated>
+    </task>
+    <task id="LOCAL-00024" summary="git clone https://github.com/xmindltd/xmind-sdk-python.git">
+      <created>1682044892848</created>
+      <option name="number" value="00024" />
+      <option name="presentableId" value="LOCAL-00024" />
+      <option name="project" value="LOCAL" />
+      <updated>1682044892848</updated>
+    </task>
+    <task id="LOCAL-00025" summary="git clone https://github.com/xmindltd/xmind-sdk-python.git">
+      <created>1682045060842</created>
+      <option name="number" value="00025" />
+      <option name="presentableId" value="LOCAL-00025" />
+      <option name="project" value="LOCAL" />
+      <updated>1682045060842</updated>
+    </task>
+    <task id="LOCAL-00026" summary="git clone https://github.com/xmindltd/xmind-sdk-python.git">
+      <created>1682046161309</created>
+      <option name="number" value="00026" />
+      <option name="presentableId" value="LOCAL-00026" />
+      <option name="project" value="LOCAL" />
+      <updated>1682046161309</updated>
+    </task>
+    <task id="LOCAL-00027" summary="git clone https://github.com/xmindltd/xmind-sdk-python.git">
+      <created>1682132192089</created>
+      <option name="number" value="00027" />
+      <option name="presentableId" value="LOCAL-00027" />
+      <option name="project" value="LOCAL" />
+      <updated>1682132192089</updated>
+    </task>
+    <task id="LOCAL-00028" summary="git clone https://github.com/xmindltd/xmind-sdk-python.git">
+      <created>1682221243448</created>
+      <option name="number" value="00028" />
+      <option name="presentableId" value="LOCAL-00028" />
+      <option name="project" value="LOCAL" />
+      <updated>1682221243449</updated>
+    </task>
+    <task id="LOCAL-00029" summary="git clone https://github.com/xmindltd/xmind-sdk-python.git">
+      <created>1682221317888</created>
+      <option name="number" value="00029" />
+      <option name="presentableId" value="LOCAL-00029" />
+      <option name="project" value="LOCAL" />
+      <updated>1682221317888</updated>
+    </task>
+    <task id="LOCAL-00030" summary="git clone https://github.com/xmindltd/xmind-sdk-python.git">
+      <created>1682221355295</created>
+      <option name="number" value="00030" />
+      <option name="presentableId" value="LOCAL-00030" />
+      <option name="project" value="LOCAL" />
+      <updated>1682221355295</updated>
+    </task>
+    <task id="LOCAL-00031" summary="git clone https://github.com/xmindltd/xmind-sdk-python.git">
+      <created>1682221423980</created>
+      <option name="number" value="00031" />
+      <option name="presentableId" value="LOCAL-00031" />
+      <option name="project" value="LOCAL" />
+      <updated>1682221423980</updated>
+    </task>
+    <task id="LOCAL-00032" summary="git clone https://github.com/xmindltd/xmind-sdk-python.git">
+      <created>1682392092406</created>
+      <option name="number" value="00032" />
+      <option name="presentableId" value="LOCAL-00032" />
+      <option name="project" value="LOCAL" />
+      <updated>1682392092406</updated>
+    </task>
+    <task id="LOCAL-00033" summary="git clone https://github.com/xmindltd/xmind-sdk-python.git">
+      <created>1682394301282</created>
+      <option name="number" value="00033" />
+      <option name="presentableId" value="LOCAL-00033" />
+      <option name="project" value="LOCAL" />
+      <updated>1682394301283</updated>
+    </task>
+    <task id="LOCAL-00034" summary="git clone https://github.com/xmindltd/xmind-sdk-python.git">
+      <created>1682528243751</created>
+      <option name="number" value="00034" />
+      <option name="presentableId" value="LOCAL-00034" />
+      <option name="project" value="LOCAL" />
+      <updated>1682528243751</updated>
+    </task>
+    <task id="LOCAL-00035" summary="git clone https://github.com/xmindltd/xmind-sdk-python.git">
+      <created>1682816518945</created>
+      <option name="number" value="00035" />
+      <option name="presentableId" value="LOCAL-00035" />
+      <option name="project" value="LOCAL" />
+      <updated>1682816518945</updated>
+    </task>
+    <task id="LOCAL-00036" summary="git clone https://github.com/xmindltd/xmind-sdk-python.git">
+      <created>1682816997426</created>
+      <option name="number" value="00036" />
+      <option name="presentableId" value="LOCAL-00036" />
+      <option name="project" value="LOCAL" />
+      <updated>1682816997426</updated>
+    </task>
+    <task id="LOCAL-00037" summary="git clone https://github.com/xmindltd/xmind-sdk-python.git">
+      <created>1682821250624</created>
+      <option name="number" value="00037" />
+      <option name="presentableId" value="LOCAL-00037" />
+      <option name="project" value="LOCAL" />
+      <updated>1682821250624</updated>
+    </task>
+    <task id="LOCAL-00038" summary="git clone https://github.com/xmindltd/xmind-sdk-python.git">
+      <created>1682972107434</created>
+      <option name="number" value="00038" />
+      <option name="presentableId" value="LOCAL-00038" />
+      <option name="project" value="LOCAL" />
+      <updated>1682972107434</updated>
+    </task>
+    <task id="LOCAL-00039" summary="git clone https://github.com/xmindltd/xmind-sdk-python.git">
+      <created>1683050683171</created>
+      <option name="number" value="00039" />
+      <option name="presentableId" value="LOCAL-00039" />
+      <option name="project" value="LOCAL" />
+      <updated>1683050683171</updated>
+    </task>
+    <task id="LOCAL-00040" summary="git clone https://github.com/xmindltd/xmind-sdk-python.git">
+      <created>1683072190827</created>
+      <option name="number" value="00040" />
+      <option name="presentableId" value="LOCAL-00040" />
+      <option name="project" value="LOCAL" />
+      <updated>1683072190827</updated>
+    </task>
+    <task id="LOCAL-00041" summary="git clone https://github.com/xmindltd/xmind-sdk-python.git">
+      <created>1683073303173</created>
+      <option name="number" value="00041" />
+      <option name="presentableId" value="LOCAL-00041" />
+      <option name="project" value="LOCAL" />
+      <updated>1683073303173</updated>
+    </task>
+    <task id="LOCAL-00042" summary="git clone https://github.com/xmindltd/xmind-sdk-python.git">
+      <created>1683169707327</created>
+      <option name="number" value="00042" />
+      <option name="presentableId" value="LOCAL-00042" />
+      <option name="project" value="LOCAL" />
+      <updated>1683169707327</updated>
+    </task>
+    <task id="LOCAL-00043" summary="git clone https://github.com/xmindltd/xmind-sdk-python.git">
+      <created>1683427412460</created>
+      <option name="number" value="00043" />
+      <option name="presentableId" value="LOCAL-00043" />
+      <option name="project" value="LOCAL" />
+      <updated>1683427412460</updated>
+    </task>
+    <task id="LOCAL-00044" summary="git clone https://github.com/xmindltd/xmind-sdk-python.git">
+      <created>1683427489499</created>
+      <option name="number" value="00044" />
+      <option name="presentableId" value="LOCAL-00044" />
+      <option name="project" value="LOCAL" />
+      <updated>1683427489499</updated>
+    </task>
+    <task id="LOCAL-00045" summary="git clone https://github.com/xmindltd/xmind-sdk-python.git">
+      <created>1683466972060</created>
+      <option name="number" value="00045" />
+      <option name="presentableId" value="LOCAL-00045" />
+      <option name="project" value="LOCAL" />
+      <updated>1683466972060</updated>
+    </task>
+    <task id="LOCAL-00046" summary="git clone https://github.com/xmindltd/xmind-sdk-python.git">
+      <created>1685415238210</created>
+      <option name="number" value="00046" />
+      <option name="presentableId" value="LOCAL-00046" />
+      <option name="project" value="LOCAL" />
+      <updated>1685415238210</updated>
+    </task>
+    <task id="LOCAL-00097" summary="Optomized Relationships for CareerPaths import">
+      <option name="closed" value="true" />
+      <created>1734585363759</created>
+      <option name="number" value="00097" />
+      <option name="presentableId" value="LOCAL-00097" />
+      <option name="project" value="LOCAL" />
+      <updated>1734585363762</updated>
+    </task>
+    <task id="LOCAL-00098" summary="Optomized Relationships for CareerPaths import">
+      <option name="closed" value="true" />
+      <created>1734677839954</created>
+      <option name="number" value="00098" />
+      <option name="presentableId" value="LOCAL-00098" />
+      <option name="project" value="LOCAL" />
+      <updated>1734677839954</updated>
+    </task>
+    <task id="LOCAL-00099" summary="Optomized Relationships for CareerPaths import">
+      <option name="closed" value="true" />
+      <created>1735708138853</created>
+      <option name="number" value="00099" />
+      <option name="presentableId" value="LOCAL-00099" />
+      <option name="project" value="LOCAL" />
+      <updated>1735708138854</updated>
+    </task>
+    <option name="localTasksCounter" value="100" />
+    <servers />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="git clone https://github.com/xmindltd/xmind-sdk-python.git" />
+    <MESSAGE value="Merge branch 'main' of https://github.com/MarlinZH/RESUME_GENERATOR" />
+    <MESSAGE value="Merge branch 'main' of https://github.com/MarlinZH/RESUME_GENERATOR,Update Google Server Auth fro security" />
+    <MESSAGE value="Merge branch 'main' of https://github.com/MarlinZH/RESUME_GENERATOR,Update Google Server Auth fro security FUNCTIONALLY COMPLETE!" />
+    <MESSAGE value="Merge branch 'main' of https://github.com/MarlinZH/RESUME_GENERATOR,Update Google Server Auth, Updated Auth Call in Email Sorting, Split Flask into new project" />
+    <MESSAGE value="Merge branch 'main' of https://github.com/MarlinZH/RESUME_GENERATOR,Update Google Server Auth, Split List Emails and Get Emails into seperate but dependent functions" />
+    <MESSAGE value="Completed identification of levels, naming branches recursively and generating markdown" />
+    <MESSAGE value="Replaced now Depreciated status check method" />
+    <MESSAGE value="Updated XMIND Map loading" />
+    <MESSAGE value="uploading and updating mindmaps" />
+    <MESSAGE value="Creating an Interface to interact with functionality" />
+    <MESSAGE value="Refractored Notion DB Connection for dynamic connections" />
+    <MESSAGE value="Remove legacy Flask_Router" />
+    <MESSAGE value="NOtion Import" />
+    <MESSAGE value="Notion Connection error handling" />
+    <MESSAGE value="updated job scraper" />
+    <MESSAGE value="Creation of Resume to Neo4j flow" />
+    <MESSAGE value="Refractoring titles for project usuage" />
+    <MESSAGE value="Unique Map Imports for each map" />
+    <MESSAGE value="optimized map to dictionary" />
+    <MESSAGE value="Reviewing functions for scalability" />
+    <MESSAGE value="Optimizing XMind to Neo4j" />
+    <MESSAGE value="improve individual XMind Imports" />
+    <MESSAGE value="file testing" />
+    <MESSAGE value="Optomized Relationships for CareerPaths import" />
+    <option name="LAST_COMMIT_MESSAGE" value="Optomized Relationships for CareerPaths import" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/xmind-sdk-python/xmind/utils.py</url>
+          <line>17</line>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/Gmail_Server_Auth.py</url>
+          <line>33</line>
+          <option name="timeStamp" value="8" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/Prompt_optimized.py</url>
+          <line>11</line>
+          <option name="timeStamp" value="9" />
+        </line-breakpoint>
+      </breakpoints>
+      <default-breakpoints>
+        <breakpoint type="python-exception">
+          <properties notifyOnTerminate="true" exception="BaseException">
+            <option name="notifyOnTerminate" value="true" />
+          </properties>
+        </breakpoint>
+      </default-breakpoints>
+    </breakpoint-manager>
+    <watches-manager>
+      <configuration name="PythonConfigurationType">
+        <watch expression="OpportunityOutline.documentElement.childNodes" />
+        <watch expression="str" language="Python" />
+        <watch expression="xmind.core" />
+        <watch expression="msg['snippet']" />
+        <watch expression="thread_id" language="Python" />
+        <watch expression="body" />
+      </configuration>
+    </watches-manager>
+  </component>
+</project>
