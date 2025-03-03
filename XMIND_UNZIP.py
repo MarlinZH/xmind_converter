@@ -1,7 +1,9 @@
 import zipfile
 import os
-import blob
+import tkinter as tk
+from tkinter import filedialog
 
+def unzip_xmind_file(xmind_path, output_folder):
     # Check if the XMind file exists
     if not os.path.exists(xmind_path):
         print(f"File not found: {xmind_path}")
@@ -16,9 +18,19 @@ import blob
         zip_ref.extractall(output_folder)
         print(f"Extracted {xmind_path} to {output_folder}")
 
+def browse_file():
+    root = tk.Tk()
+    root.withdraw()  # Hide the root window
+    file_path = filedialog.askopenfilename(filetypes=[("XMind files", "*.xmind")])
+    return file_path
 
-# Example usage
-xmind_file_path =  r"C:\Users\Froap\OneDrive\.Diagrams\MindMaps\Career\Career_Experience.xmind"  # Replace with the path to your XMind file
-output_folder_path = 'unzipped_xmind_folder'  # Replace with the desired output folder
+def main():
+    xmind_file_path = browse_file()
+    if xmind_file_path:
+        output_folder_path = 'unzipped_xmind_folder'  # Replace with the desired output folder
+        unzip_xmind_file(xmind_file_path, output_folder_path)
+    else:
+        print("No file selected")
 
-unzip_xmind_file(xmind_file_path, output_folder_path)
+if __name__ == "__main__":
+    main()
