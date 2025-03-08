@@ -3,6 +3,8 @@ from XMIND_PARSER_EXT import XMindMapAccesser
 xmind_file_path = (
     r"C:\Users\froap\OneDrive\.Diagrams\MindMaps\Career\Career_Experience.xmind"
 )
+xmind_parser = XMindMapAccesser(xmind_file_path)
+xmind_parser.load_map()
 
 # {
 #     "CareerExperience": r"C:\\Users\\Froap\\OneDrive\\.Diagrams\\MindMaps\\Career\\Career_Experience.xmind",
@@ -11,8 +13,8 @@ xmind_file_path = (
 #     "SCE": r"C:\\Users\\Froap\\OneDrive\\.Diagrams\\MindMaps\\Career\\SCE.xmind",
 # }
 
-xmind_map = XMIND_PARSER_EXT.XMindMapAccesser(xmind_file_path)
-xmind_map.get_number_of_levels()
+# xmind_map = XMIND_PARSER_EXT.XMindMapAccesser(xmind_file_path)
+# xmind_map.get_number_of_levels()
 # print(xmind_map)
 # print(xmind_map.get_root_topic)
 # num_levels = xmind_map.get_number_of_levels()

@@ -120,4 +120,5 @@ class XMindMapAccesser:
         df = pd.DataFrame(rows)
         return df
 
-
+def main():
+    map = XMindMapAccesser(r"C:\Users\froap\OneDrive\.Diagrams\MindMaps\Career\Career_Experience.xmind")
