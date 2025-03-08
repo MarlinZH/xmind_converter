@@ -11,7 +11,7 @@ class XMindMapAccesser:
     def __init__(self, xmind_file_path):
         self.xmind_map = xmind_to_dict(xmind_file_path)
         self.topic_hierarchy = self.xmind_map[0]["topic"]["topics"]
-        self.root_topic = self.get_root_topic()
+        # self.root_topic = self.get_root_topic()
 
     def get_number_of_levels(self, node=None, level=1):
         if node is None:
@@ -120,5 +120,3 @@ class XMindMapAccesser:
         df = pd.DataFrame(rows)
         return df
 
-def main():
-    map = XMindMapAccesser(r"C:\Users\froap\OneDrive\.Diagrams\MindMaps\Career\Career_Experience.xmind")
