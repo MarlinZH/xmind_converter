@@ -14,15 +14,14 @@ xmind_map = XMindMapAccesser(xmind_file_path)
 print("XMind Map Loaded")
 map_levels = xmind_map.get_number_of_levels()
 print(f"Number of Levels in the XMind Map: {map_levels}")
-# print(xmind_map.get_root_topic)
-# num_levels = xmind_map.get_number_of_levels()
-# # Calculate and print the number of levels
-# print(f"\nNumber of Levels in the XMind Map: {num_levels}")
+map_topic = xmind_map.get_root_topic()
+map_topic_nodes = xmind_map.get_topic_nodes()
+# xmind_map.get_sub_topics()
+
+
 # print("XMind Map Loaded")
 # xmind_map.load_map()
-# xmind_map.get_root_topic()
-# xmind_map.get_topic_nodes()
-# xmind_map.get_sub_topics()
+
 
 # markdown_output = xmind_map.get_sub_topics_markdown()
 # # print(markdown_output)

@@ -11,7 +11,7 @@ class XMindMapAccesser:
     def __init__(self, xmind_file_path):
         self.xmind_map = xmind_to_dict(xmind_file_path)
         self.topic_hierarchy = self.xmind_map[0]["topic"]["topics"]
-        # self.root_topic = self.get_root_topic()
+        
 
     def get_number_of_levels(self, node=None, level=1):
         if node is None:
@@ -37,8 +37,8 @@ class XMindMapAccesser:
         try:
             map_contents = self.load_map()
             root_topic = map_contents["topic"]["title"]
-            logging.info(f"Root topic found: {root_topic.get('title', 'Untitled')}")
-            # print("ROOT TOPIC:", root_topic)
+            # logging.info(f"Root topic found: {root_topic.get('title', 'Untitled')}")
+            print("ROOT TOPIC:", root_topic)
             return root_topic
         except KeyError:
             logging.error("Root topic not found in XMind map.")
