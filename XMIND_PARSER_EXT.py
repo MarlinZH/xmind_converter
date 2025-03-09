@@ -49,7 +49,7 @@ class XMindMapAccesser:
         topic_nodes = []
         for topic in map_contents["topic"]["topics"]:
             topic_nodes.append(topic['title'])
-        # print("TOPIC NODES:", topic_nodes)
+        print("TOPIC NODES:", topic_nodes)
         return topic_nodes
 
     def has_subtopics(self, node):
@@ -68,7 +68,7 @@ class XMindMapAccesser:
                 # Recursively call get_sub_topics for each subtopic
                 self.get_sub_topics(subtopic, level + 1, current_node_index)
 
-    def get_sub_topics_markdown(self, node=None, level=1):
+    def generate_markdown(self, node=None, level=1):
         if node is None:
             node = self.load_map()["topic"]
             markdown_output = f"# [[{node['title']}]]\n\n"
@@ -80,7 +80,7 @@ class XMindMapAccesser:
                 indent = "    " * (level - 1)
                 markdown_output += f"{indent}- [[{subtopic['title']}]]\n"
                 if self.has_subtopics(subtopic):
-                    markdown_output += self.get_sub_topics_markdown(subtopic, level + 1)
+                    markdown_output += self.generate_markdown(subtopic, level + 1)
 
         return markdown_output
 
