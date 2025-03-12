@@ -1,5 +1,6 @@
 import xmindparser
 import Notion_DB_Connection
+import notion
 
 # Notion API setup
 notion = Notion_DB_Connection.NotionClient
