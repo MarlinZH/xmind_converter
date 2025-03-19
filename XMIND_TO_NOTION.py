@@ -57,7 +57,7 @@ def import_xmind_to_notion(xmind_file, notion_database_id):
 xmind_file_path = r"C:\Users\Froap\OneDrive\.Diagrams\MindMaps\Career\Career_Experience.xmind"
 notion_database_id = Notion_DB_Connection.income_db_
 import_xmind_to_notion(xmind_file_path, notion_database_id)
-
+print(xmind_file_path)
 
 
 
