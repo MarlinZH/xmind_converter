@@ -140,15 +140,9 @@ class XMindToNotionConverter:
             raise
 
 # Example usage
-if __name__ == "__main__":
-    try:
-        converter = XMindToNotionConverter(Notion_DB_Connection.NotionClient)
-        xmind_file_path = r"C:\Users\Froap\OneDrive\.Diagrams\MindMaps\Career\Career_Experience.xmind"
-        notion_database_id = Notion_DB_Connection.income_db_
-        converter.import_xmind_to_notion(xmind_file_path, notion_database_id)
-    except Exception as e:
-        logger.error(f"Program failed: {e}")
-        raise
+xmind_file_path = r"C:\Users\Froap\OneDrive\.Diagrams\MindMaps\Career\Career_Experience.xmind"
+notion_database_id = Notion_DB_Connection.income_db_
+import_xmind_to_notion(xmind_file_path, notion_database_id)
 
 
 
