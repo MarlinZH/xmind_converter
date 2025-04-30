@@ -1,6 +1,6 @@
 # XMind to Notion Converter
 
-A Python tool to convert XMind mind maps into Notion pages while preserving the hierarchical structure and additional properties.
+A Python tool to convert XMind mind maps into Notion pages while preserving the hierarchical structure and additional properties. Available both as a Python script and a desktop application with GUI.
 
 ## Features
 
@@ -10,15 +10,27 @@ A Python tool to convert XMind mind maps into Notion pages while preserving the 
 - Handles XMind notes and labels
 - Provides detailed logging and error handling
 - Caches database information for better performance
+- User-friendly GUI for easy conversion
+- Secure credential storage
 
 ## Prerequisites
 
+### For Python Script Version
+- Python 3.7+
+- XMind mind map files (.xmind)
+- Notion API access token
+- Notion database ID
+
+### For GUI Version
+- Node.js 14+
 - Python 3.7+
 - XMind mind map files (.xmind)
 - Notion API access token
 - Notion database ID
 
 ## Installation
+
+### Python Script Version
 
 1. Clone the repository:
 ```bash
@@ -36,7 +48,36 @@ pip install xmindparser notion-client
    - Copy the integration token
    - Share your Notion database with the integration
 
+### GUI Version
+
+1. Clone the repository:
+```bash
+git clone <repository-url>
+cd XMIND_Converter
+```
+
+2. Install required packages:
+```bash
+# Install Python dependencies
+pip install xmindparser notion-client
+
+# Install Node.js dependencies
+npm install
+```
+
+3. Build the application:
+```bash
+npm run build
+```
+
+4. Start the application:
+```bash
+npm start
+```
+
 ## Configuration
+
+### Python Script Version
 
 1. Create a `Notion_DB_Connection.py` file with your Notion credentials:
 ```python
@@ -49,9 +90,13 @@ NotionClient = Client(auth="your_integration_token")
 income_db_ = "your_database_id"
 ```
 
+### GUI Version
+
+The GUI version will prompt you to enter your Notion credentials when you first run the application. These credentials are securely stored on your local machine.
+
 ## Usage
 
-### Basic Usage
+### Python Script Version
 
 ```python
 from XMIND_TO_NOTION import XMindToNotionConverter
@@ -66,19 +111,22 @@ notion_database_id = Notion_DB_Connection.income_db_
 converter.import_xmind_to_notion(xmind_file_path, notion_database_id)
 ```
 
-### XMind File Structure
+### GUI Version
+
+1. Launch the application
+2. Enter your Notion API credentials (only required on first run)
+3. Select your XMind file using the file picker
+4. Click "Convert" to start the conversion process
+5. Monitor the conversion progress in the UI
+6. View the results in your Notion database
+
+## XMind File Structure
 
 The converter expects XMind files with the following structure:
 - Root topics will become top-level pages in Notion
 - Subtopics will become child pages
 - Notes will be added as rich text content
 - Labels will be added as multi-select properties
-
-### Logging
-
-The converter provides detailed logging:
-- INFO level: General progress and successful operations
-- ERROR level: Any issues encountered during conversion
 
 ## Example
 
