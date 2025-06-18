@@ -49,7 +49,7 @@ class Neo4jImporter:
                 # Create relationship with the parent, if applicable
                 if parent_name:
                     session.execute_write(
-                        self.create_relationship,
+                        self.create_relationship,#creation of relationship 
                         f"Level{level-1}",  # Parent label
                         node_label,
                         relationship_name,
