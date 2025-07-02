@@ -1,4 +1,4 @@
-from XMIND_PARSER_EXT import XMindMapAccesser
+from xmind_parser import XMindMapAccesser
 import os
 
 xmind_file_path = (
