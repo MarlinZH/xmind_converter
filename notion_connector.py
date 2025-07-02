@@ -2,6 +2,8 @@ from pathlib import Path
 from notion.client import NotionClient
 import json
 import pandas as pd
+import argparse
+
 
 # Load Notion credentials
 secrets_path = Path(r"C:\Users\Froap\_DEV\OSOM\.Secrets")
@@ -80,8 +82,25 @@ def retrieve_databases(database_id: str) -> None:
     print(f"Data from database {database_id}:")
     print(df)
 
+def main(file, database, token):
+    global Notion
+    Notion = NotionClient(auth=token)
+    retrieve_databases(database)
+
 if __name__ == "__main__":
-    # Loop through all database IDs and retrieve data
-    for db_name, db_id in notion_databases.items():
-        print(f"Retrieving data from '{db_name}' database...")
-        retrieve_databases(db_id)
+    parser = argparse.ArgumentParser(description="Convert XMind to Notion database")
+    parser.add_argument("--file", required=True, help="Path to the XMind file")
+    parser.add_argument("--database", required=True, help="Notion database ID")
+    parser.add_argument("--token", required=False, help="Notion integration token (optional)")
+    args = parser.parse_args()
+
+    # If token is provided, use it; otherwise, fallback to your existing method
+    notion_token = args.token
+    if not notion_token:
+        # Load token from .Secrets/Notion.json
+        with open(notion_secrets_path) as notion_secrets:
+            notion_credentials = json.load(notion_secrets)
+        notion_token = notion_credentials['Token']
+
+    # Call your main function with these arguments
+    main(args.file, args.database, notion_token)
