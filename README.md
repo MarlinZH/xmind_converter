@@ -1,6 +1,6 @@
 # XMind to Notion Converter
 
-A Python tool to convert XMind mind maps into Notion pages while preserving the hierarchical structure and additional properties. Available both as a Python script and a desktop application with GUI.
+A Python tool to convert XMind mind maps into multiple formats while preserving the hierarchical structure and additional properties. Available both as a Python script and a desktop application with GUI.
 
 ## Features
 
