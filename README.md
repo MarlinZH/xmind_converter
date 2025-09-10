@@ -28,7 +28,7 @@ A Python tool to convert XMind mind maps into multiple formats while preserving 
 - Notion API access token
 - Notion database ID
 
-## Installation
+### Installation
 
 ### Python Script Version
 
