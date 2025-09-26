@@ -133,14 +133,6 @@ def main():
     NEO4J_USERNAME = blub.NEO4J_USERNAME
     NEO4J_PASSWORD = blub.NEO4J_PASSWORD
 
-    # Paths to XMind files
-    # xmind_files = {
-    #     "CareerExperience": r"C:\\Users\\Froap\\OneDrive\\.Diagrams\\MindMaps\\Career\\Career_Experience.xmind",
-    #     "CareerPaths": r"C:\\Users\\Froap\\OneDrive\\.Diagrams\\MindMaps\\Career\\CareerPath_Titles.xmind",
-    #     "OpportunityOutlines": r"C:\\Users\\Froap\\OneDrive\\.Diagrams\\MindMaps\\Career\\Opportunity_Outlines.xmind",
-    #     "SCE": r"C:\\Users\\Froap\\OneDrive\\.Diagrams\\MindMaps\\Career\\SCE.xmind"
-    # }
-
     # Initialize Neo4j importer
     importer = Neo4jImporter(NEO4J_URI, NEO4J_USERNAME, NEO4J_PASSWORD)
 
