@@ -39,6 +39,8 @@ venv.bak/
 .DS_Store
 
 # Credentials and secrets
+config/notion_credentials.py
+config/neo4j_credentials.py
 Notion_DB_Connection.py
 blub.py
 .env
@@ -77,6 +79,7 @@ Thumbs.db
 Desktop.ini
 
 # Output files
+output/
 *_output.md
 *_output.csv
 
@@ -84,3 +87,12 @@ Desktop.ini
 *.tmp
 *.bak
 temp/
+
+# Legacy files (will be removed)
+main.py
+config.py
+xmind_parser.py
+xmind_to_notion.py
+xmind_to_neo4j.py
+xmind_unzip.py
+notion_connector.py
