@@ -1,165 +1,341 @@
-# XMind to Notion Converter
+# XMind Converter
 
-A Python tool to convert XMind mind maps into multiple formats while preserving the hierarchical structure and additional properties. Available both as a Python script and a desktop application with GUI.
+A professional Python package to convert XMind mind maps into multiple formats (Markdown, CSV, Notion, Neo4j) with a unified command-line interface.
 
-## Features
+## ✨ Features
 
-- Converts XMind mind maps to Notion pages
-- Preserves hierarchical structure (parent-child relationships)
-- Supports multiple XMind sheets
-- Handles XMind notes and labels
-- Provides detailed logging and error handling
-- Caches database information for better performance
-- User-friendly GUI for easy conversion
-- Secure credential storage
+- **Single Command Interface** - One `xmind-convert` command for all formats
+- **Multiple Output Formats**
+  - Markdown with wiki-style links
+  - CSV with hierarchical columns
+  - Notion database pages with relationships
+  - Neo4j graph database with hierarchical nodes
+- **Professional Package Structure** - Proper Python package with pip installation
+- **Preserves Structure** - Maintains parent-child relationships and hierarchy
+- **Type Hints & Documentation** - Fully typed and documented codebase
+- **Flexible Configuration** - Environment variables, config files, or CLI options
 
-## Prerequisites
-
-### For Python Script Version
-- Python 3.7+
-- XMind mind map files (.xmind)
-- Notion API access token
-- Notion database ID
-
-### For GUI Version
-- Node.js 14+
-- Python 3.7+
-- XMind mind map files (.xmind)
-- Notion API access token
-- Notion database ID
+## 🚀 Quick Start
 
 ### Installation
 
-### Python Script Version
-
-1. Clone the repository:
 ```bash
-git clone <repository-url>
-cd XMIND_Converter
+# Clone the repository
+git clone https://github.com/MarlinZH/xmind_converter.git
+cd xmind_converter
+
+# Install the package
+pip install -e .
+
+# Or install with development dependencies
+pip install -e ".[dev]"
 ```
 
-2. Install required packages:
+### Basic Usage
+
 ```bash
-pip install xmindparser notion-client
+# Convert to Markdown
+xmind-convert input.xmind markdown
+
+# Convert to CSV
+xmind-convert input.xmind csv --output ./data
+
+# Convert to Notion
+xmind-convert input.xmind notion --token YOUR_TOKEN --database-id YOUR_DB_ID
+
+# Convert to Neo4j
+xmind-convert input.xmind neo4j --uri bolt://localhost:7687 --username neo4j --password pass
 ```
 
-3. Set up your Notion API credentials:
-   - Create a Notion integration at https://www.notion.so/my-integrations
-   - Copy the integration token
-   - Share your Notion database with the integration
+## 📦 Package Structure
 
-### GUI Version
-
-1. Clone the repository:
-```bash
-git clone <repository-url>
-cd XMIND_Converter
+```
+xmind_converter/
+├── xmind_converter/              # Main package
+│   ├── __init__.py              # Package initialization
+│   ├── cli.py                   # Unified CLI interface
+│   ├── core/                    # Core functionality
+│   │   ├── parser.py            # XMind parsing logic
+│   │   └── config.py            # Configuration management
+│   └── converters/              # Format converters
+│       ├── base.py              # Base converter class
+│       ├── markdown.py          # Markdown converter
+│       ├── csv.py               # CSV converter
+│       ├── notion.py            # Notion converter
+│       └── neo4j.py             # Neo4j converter
+├── config/                      # Configuration templates
+│   ├── notion_credentials.example.py
+│   └── neo4j_credentials.example.py
+├── tests/                       # Unit tests (coming soon)
+├── setup.py                     # Package setup
+├── requirements.txt             # Dependencies
+└── README.md                    # This file
 ```
 
-2. Install required packages:
-```bash
-# Install Python dependencies
-pip install xmindparser notion-client
+## 🔧 Configuration
 
-# Install Node.js dependencies
-npm install
+### Method 1: Environment Variables (Recommended)
+
+```bash
+# Notion
+export NOTION_TOKEN="secret_your_token"
+export NOTION_DATABASE_ID="your_database_id"
+
+# Neo4j
+export NEO4J_URI="bolt://localhost:7687"
+export NEO4J_USERNAME="neo4j"
+export NEO4J_PASSWORD="your_password"
 ```
 
-3. Build the application:
+### Method 2: Config Files
+
 ```bash
-npm run build
+# Copy templates
+cp config/notion_credentials.example.py config/notion_credentials.py
+cp config/neo4j_credentials.example.py config/neo4j_credentials.py
+
+# Edit with your credentials
+nano config/notion_credentials.py
+nano config/neo4j_credentials.py
 ```
 
-4. Start the application:
+### Method 3: CLI Options
+
 ```bash
-npm start
+# Pass credentials directly
+xmind-convert input.xmind notion --token TOKEN --database-id DB_ID
+xmind-convert input.xmind neo4j --uri URI --username USER --password PASS
 ```
 
-## Configuration
+## 📖 Detailed Usage
 
-### Python Script Version
+### Convert to Markdown
 
-1. Create a `Notion_DB_Connection.py` file with your Notion credentials:
+```bash
+# Basic conversion
+xmind-convert mymap.xmind markdown
+
+# Specify output directory
+xmind-convert mymap.xmind markdown --output ./docs
+
+# With verbose logging
+xmind-convert mymap.xmind markdown --verbose
+```
+
+**Output:** Markdown file with wiki-style `[[links]]`
+
+### Convert to CSV
+
+```bash
+# Basic conversion
+xmind-convert mymap.xmind csv
+
+# Specify output directory
+xmind-convert mymap.xmind csv --output ./data
+```
+
+**Output:** CSV file with hierarchical columns (Level 1, Level 2, etc.)
+
+### Convert to Notion
+
+```bash
+# Using environment variables
+xmind-convert mymap.xmind notion
+
+# Using CLI options
+xmind-convert mymap.xmind notion \\
+  --token "secret_abc123..." \\
+  --database-id "1234567890abcdef"
+```
+
+**Requirements:**
+1. Create Notion integration at https://www.notion.so/my-integrations
+2. Share your database with the integration
+3. Get database ID from URL: `https://notion.so/workspace/DATABASE_ID?v=...`
+
+### Convert to Neo4j
+
+```bash
+# Using environment variables
+xmind-convert mymap.xmind neo4j
+
+# Using CLI options
+xmind-convert mymap.xmind neo4j \\
+  --uri bolt://localhost:7687 \\
+  --username neo4j \\
+  --password mypassword
+
+# Custom relationship type
+xmind-convert mymap.xmind neo4j --relationship CONTAINS
+```
+
+## 🐍 Python API
+
+You can also use the package programmatically:
+
 ```python
-from notion_client import Client
+from xmind_converter.core.parser import XMindParser
+from xmind_converter.converters import MarkdownConverter, CSVConverter
 
-# Initialize Notion client
-NotionClient = Client(auth="your_integration_token")
+# Parse XMind file
+parser = XMindParser("input.xmind")
 
-# Your Notion database ID
-income_db_ = "your_database_id"
+# Convert to Markdown
+markdown_converter = MarkdownConverter(parser)
+output_path = markdown_converter.convert(output_dir="./docs")
+print(f"Saved to: {output_path}")
+
+# Convert to CSV
+csv_converter = CSVConverter(parser)
+output_path = csv_converter.convert(output_dir="./data")
+print(f"Saved to: {output_path}")
+
+# Access parser data
+print(f"Root topic: {parser.root_title}")
+print(f"Max depth: {parser.get_max_depth()}")
+print(f"All topics: {parser.get_all_topics()}")
+
+# Get as DataFrame
+df = parser.to_dataframe()
+print(df.head())
 ```
 
-### GUI Version
+## 🧪 Testing
 
-The GUI version will prompt you to enter your Notion credentials when you first run the application. These credentials are securely stored on your local machine.
+```bash
+# Run tests (coming soon)
+pytest
 
-## Usage
+# Run with coverage
+pytest --cov=xmind_converter
 
-### Python Script Version
+# Type checking
+mypy xmind_converter
 
-```python
-from XMIND_TO_NOTION import XMindToNotionConverter
-import Notion_DB_Connection
-
-# Initialize the converter
-converter = XMindToNotionConverter(Notion_DB_Connection.NotionClient)
-
-# Convert XMind to Notion
-xmind_file_path = "path/to/your/mindmap.xmind"
-notion_database_id = Notion_DB_Connection.income_db_
-converter.import_xmind_to_notion(xmind_file_path, notion_database_id)
+# Code formatting
+black xmind_converter
 ```
 
-### GUI Version
+## 🛠️ Development
 
-1. Launch the application
-2. Enter your Notion API credentials (only required on first run)
-3. Select your XMind file using the file picker
-4. Click "Convert" to start the conversion process
-5. Monitor the conversion progress in the UI
-6. View the results in your Notion database
+### Setup Development Environment
 
-## XMind File Structure
+```bash
+# Clone and install in editable mode
+git clone https://github.com/MarlinZH/xmind_converter.git
+cd xmind_converter
+pip install -e ".[dev]"
 
-The converter expects XMind files with the following structure:
-- Root topics will become top-level pages in Notion
-- Subtopics will become child pages
-- Notes will be added as rich text content
-- Labels will be added as multi-select properties
-
-## Example
-
-Given an XMind file with this structure:
-```
-Root Topic
-├── Subtopic 1
-│   ├── Note: "Important information"
-│   └── Label: "Priority"
-└── Subtopic 2
-    └── Child Topic
+# Install pre-commit hooks (if configured)
+pre-commit install
 ```
 
-This will create in Notion:
-- A database entry for "Root Topic"
-- Child pages for "Subtopic 1" and "Subtopic 2"
-- A grandchild page for "Child Topic"
-- Notes and labels will be preserved as properties
+### Project Commands
 
-## Error Handling
+```bash
+# Format code
+black xmind_converter
 
-The converter includes comprehensive error handling for:
-- Invalid file paths
-- Missing or invalid XMind files
-- Notion API connection issues
-- Database access problems
+# Lint code
+flake8 xmind_converter
 
-All errors are logged with detailed information to help with debugging.
+# Type check
+mypy xmind_converter
 
-## Contributing
+# Run tests
+pytest
+```
 
-Feel free to submit issues and enhancement requests!
+## 📋 Command Reference
 
-## License
+```
+xmind-convert INPUT FORMAT [OPTIONS]
 
-[Your chosen license] 
+Arguments:
+  INPUT                Path to XMind file (.xmind)
+  FORMAT               Output format: markdown, csv, notion, neo4j
+
+Global Options:
+  -o, --output DIR     Output directory (for file formats)
+  -v, --verbose        Enable verbose logging
+  -h, --help           Show help message
+
+Notion Options:
+  --token TOKEN        Notion API integration token
+  --database-id ID     Notion database ID
+
+Neo4j Options:
+  --uri URI            Neo4j database URI
+  --username USER      Neo4j username  
+  --password PASS      Neo4j password
+  --relationship TYPE  Relationship type (default: HAS_CHILD)
+```
+
+## 🔍 Troubleshooting
+
+**Import Error: No module named 'xmind_converter'**
+```bash
+# Make sure you installed the package
+pip install -e .
+```
+
+**Command not found: xmind-convert**
+```bash
+# Reinstall the package to register the entry point
+pip install --force-reinstall -e .
+```
+
+**Notion API authentication failed**
+- Verify your integration token is correct
+- Ensure the database is shared with your integration
+- Check that the database ID is correct
+
+**Neo4j connection refused**
+- Verify Neo4j is running: `neo4j status`
+- Check the URI format: `bolt://localhost:7687`
+- Confirm username and password are correct
+
+## 🤝 Contributing
+
+Contributions are welcome! Please:
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Make your changes
+4. Add tests if applicable
+5. Run code formatters and linters
+6. Commit your changes (`git commit -m 'Add amazing feature'`)
+7. Push to the branch (`git push origin feature/amazing-feature`)
+8. Open a Pull Request
+
+## 📄 License
+
+MIT License - see LICENSE file for details
+
+## 🎯 Roadmap
+
+- [ ] Add comprehensive unit tests
+- [ ] Add GitHub Actions CI/CD
+- [ ] Support for more output formats (JSON, XML)
+- [ ] Batch processing multiple files
+- [ ] Custom templates for Markdown output
+- [ ] Web-based interface
+- [ ] Plugin system for custom converters
+- [ ] Docker containerization
+- [ ] PyPI package publication
+
+## 📞 Support
+
+- 🐛 **Bug Reports:** [Open an issue](https://github.com/MarlinZH/xmind_converter/issues)
+- 💡 **Feature Requests:** [Open an issue](https://github.com/MarlinZH/xmind_converter/issues)
+- 📖 **Documentation:** Check this README and inline code documentation
+
+## ⭐ Acknowledgments
+
+- Built with [xmindparser](https://github.com/tobyqin/xmindparser)
+- Uses [Notion SDK](https://github.com/ramnes/notion-sdk-py)
+- Powered by [Neo4j Python Driver](https://github.com/neo4j/neo4j-python-driver)
+
+---
+
+**Made with ❤️ by MarlinZH**
