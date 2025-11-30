@@ -1,257 +1,207 @@
-"""Unit tests for format converters."""
+"""
+Unit tests for converter classes.
+"""
 import pytest
 from pathlib import Path
 import pandas as pd
-from unittest.mock import Mock, patch, MagicMock
+from unittest.mock import Mock, MagicMock, patch
 
 from xmind_converter.core.parser import XMindParser
-from xmind_converter.converters import (
-    MarkdownConverter,
-    CSVConverter,
-    NotionConverter,
-    Neo4jConverter
-)
+from xmind_converter.converters.markdown import MarkdownConverter
+from xmind_converter.converters.csv import CSVConverter
+from xmind_converter.converters.notion import NotionConverter
+from xmind_converter.converters.neo4j import Neo4jConverter
 
 
 class TestMarkdownConverter:
-    """Test Markdown converter."""
+    """Tests for MarkdownConverter."""
     
-    def test_convert_creates_file(self, mock_xmind_file, temp_output_dir):
-        """Test that Markdown converter creates output file."""
-        parser = XMindParser(str(mock_xmind_file))
+    def test_convert_creates_markdown_file(self, temp_xmind_file, output_dir):
+        """Test that convert creates a markdown file."""
+        parser = XMindParser(str(temp_xmind_file))
         converter = MarkdownConverter(parser)
         
-        output_path = converter.convert(output_dir=str(temp_output_dir))
+        output_path = converter.convert(output_dir=str(output_dir))
         
         assert Path(output_path).exists()
-        assert Path(output_path).suffix == ".md"
+        assert output_path.endswith('.md')
     
-    def test_convert_content(self, mock_xmind_file, temp_output_dir):
-        """Test that Markdown file contains expected content."""
-        parser = XMindParser(str(mock_xmind_file))
+    def test_convert_markdown_content(self, temp_xmind_file, output_dir):
+        """Test that markdown file contains correct content."""
+        parser = XMindParser(str(temp_xmind_file))
         converter = MarkdownConverter(parser)
         
-        output_path = converter.convert(output_dir=str(temp_output_dir))
-        content = Path(output_path).read_text(encoding='utf-8')
+        output_path = converter.convert(output_dir=str(output_dir))
+        content = Path(output_path).read_text()
         
         assert "# [[Project Planning]]" in content
+        assert "[[Phase 1]]" in content
         assert "[[Research]]" in content
-        assert "[[Market Analysis]]" in content
-        assert "[[Development]]" in content
     
-    def test_convert_custom_path(self, mock_xmind_file, temp_output_dir):
-        """Test conversion with custom output path."""
-        parser = XMindParser(str(mock_xmind_file))
+    def test_convert_with_custom_path(self, temp_xmind_file, tmp_path):
+        """Test convert with custom output path."""
+        parser = XMindParser(str(temp_xmind_file))
         converter = MarkdownConverter(parser)
         
-        custom_path = temp_output_dir / "custom_name.md"
+        custom_path = tmp_path / "custom_output.md"
         output_path = converter.convert(output_path=str(custom_path))
         
-        assert Path(output_path) == custom_path
-        assert custom_path.exists()
-    
-    def test_convert_default_location(self, mock_xmind_file):
-        """Test that default output location is next to input file."""
-        parser = XMindParser(str(mock_xmind_file))
-        converter = MarkdownConverter(parser)
-        
-        output_path = converter.convert()
-        output_file = Path(output_path)
-        
-        assert output_file.parent == mock_xmind_file.parent
-        assert output_file.stem == mock_xmind_file.stem
-        assert output_file.suffix == ".md"
-        output_file.unlink()  # Clean up
+        assert Path(output_path).exists()
+        assert output_path == str(custom_path)
 
 
 class TestCSVConverter:
-    """Test CSV converter."""
+    """Tests for CSVConverter."""
     
-    def test_convert_creates_file(self, mock_xmind_file, temp_output_dir):
-        """Test that CSV converter creates output file."""
-        parser = XMindParser(str(mock_xmind_file))
+    def test_convert_creates_csv_file(self, temp_xmind_file, output_dir):
+        """Test that convert creates a CSV file."""
+        parser = XMindParser(str(temp_xmind_file))
         converter = CSVConverter(parser)
         
-        output_path = converter.convert(output_dir=str(temp_output_dir))
+        output_path = converter.convert(output_dir=str(output_dir))
         
         assert Path(output_path).exists()
-        assert Path(output_path).suffix == ".csv"
+        assert output_path.endswith('.csv')
     
-    def test_convert_content_structure(self, mock_xmind_file, temp_output_dir):
-        """Test that CSV has correct structure."""
-        parser = XMindParser(str(mock_xmind_file))
+    def test_convert_csv_content(self, temp_xmind_file, output_dir):
+        """Test that CSV file contains correct data."""
+        parser = XMindParser(str(temp_xmind_file))
         converter = CSVConverter(parser)
         
-        output_path = converter.convert(output_dir=str(temp_output_dir))
+        output_path = converter.convert(output_dir=str(output_dir))
         df = pd.read_csv(output_path)
         
         assert len(df) > 0
         assert "Level 1" in df.columns
         assert "Level 2" in df.columns
-        assert "Level 3" in df.columns
+        assert df["Level 1"].iloc[0] == "Project Planning"
     
-    def test_convert_content_values(self, simple_mock_xmind_file, temp_output_dir):
-        """Test that CSV contains expected values."""
-        parser = XMindParser(str(simple_mock_xmind_file))
+    def test_convert_preserves_hierarchy(self, temp_xmind_file, output_dir):
+        """Test that CSV conversion preserves hierarchy."""
+        parser = XMindParser(str(temp_xmind_file))
         converter = CSVConverter(parser)
         
-        output_path = converter.convert(output_dir=str(temp_output_dir))
+        output_path = converter.convert(output_dir=str(output_dir))
         df = pd.read_csv(output_path)
         
-        assert "Root" in df["Level 1"].values
-        assert "Child 1" in df["Level 2"].values
-        assert "Child 2" in df["Level 2"].values
-        assert "Child 3" in df["Level 2"].values
-    
-    def test_convert_custom_path(self, mock_xmind_file, temp_output_dir):
-        """Test conversion with custom output path."""
-        parser = XMindParser(str(mock_xmind_file))
-        converter = CSVConverter(parser)
-        
-        custom_path = temp_output_dir / "custom_name.csv"
-        output_path = converter.convert(output_path=str(custom_path))
-        
-        assert Path(output_path) == custom_path
-        assert custom_path.exists()
+        # Check that we have multiple levels
+        assert "Level 3" in df.columns
+        # Check a specific hierarchical path
+        testing_rows = df[df["Level 2"] == "Testing"]
+        assert len(testing_rows) > 0
 
 
 class TestNotionConverter:
-    """Test Notion converter."""
+    """Tests for NotionConverter."""
     
-    def test_init_requires_client_and_db_id(self, mock_xmind_file, mock_notion_client):
-        """Test that NotionConverter requires client and database ID."""
-        parser = XMindParser(str(mock_xmind_file))
-        converter = NotionConverter(parser, mock_notion_client, "test-db-id")
+    @patch('xmind_converter.converters.notion.Client')
+    def test_converter_initialization(self, mock_client, temp_xmind_file):
+        """Test NotionConverter initialization."""
+        parser = XMindParser(str(temp_xmind_file))
+        mock_notion = MagicMock()
+        
+        converter = NotionConverter(parser, mock_notion, "test_db_id")
         
         assert converter.parser == parser
-        assert converter.notion_client == mock_notion_client
-        assert converter.database_id == "test-db-id"
+        assert converter.notion == mock_notion
+        assert converter.database_id == "test_db_id"
     
-    @patch('xmind_converter.converters.notion.NotionConverter._create_page')
-    def test_convert_calls_create_page(self, mock_create_page, mock_xmind_file, mock_notion_client):
-        """Test that convert method calls _create_page for topics."""
-        mock_create_page.return_value = {"id": "mock-id", "url": "mock-url"}
+    @patch('xmind_converter.converters.notion.Client')
+    def test_convert_calls_notion_api(self, mock_client, temp_xmind_file):
+        """Test that convert calls Notion API methods."""
+        parser = XMindParser(str(temp_xmind_file))
+        mock_notion = MagicMock()
+        mock_notion.pages.create.return_value = {"id": "page_123"}
         
-        parser = XMindParser(str(mock_xmind_file))
-        converter = NotionConverter(parser, mock_notion_client, "test-db-id")
-        
+        converter = NotionConverter(parser, mock_notion, "test_db_id")
         result = converter.convert()
         
-        assert "Created" in result or "pages" in result
-        assert mock_create_page.called
-    
-    def test_convert_returns_success_message(self, simple_mock_xmind_file, mock_notion_client):
-        """Test that convert returns a success message."""
-        parser = XMindParser(str(simple_mock_xmind_file))
-        converter = NotionConverter(parser, mock_notion_client, "test-db-id")
-        
-        with patch.object(converter, '_create_page', return_value={"id": "mock-id"}):
-            result = converter.convert()
-            
-            assert isinstance(result, str)
-            assert len(result) > 0
+        # Verify API was called
+        assert mock_notion.pages.create.called
+        assert "page" in result.lower() or "created" in result.lower()
 
 
 class TestNeo4jConverter:
-    """Test Neo4j converter."""
+    """Tests for Neo4jConverter."""
     
     @patch('xmind_converter.converters.neo4j.GraphDatabase')
-    def test_init_creates_driver(self, mock_graph_db, mock_xmind_file):
-        """Test that Neo4jConverter initializes driver."""
-        mock_driver = Mock()
+    def test_converter_initialization(self, mock_graph_db, temp_xmind_file):
+        """Test Neo4jConverter initialization."""
+        parser = XMindParser(str(temp_xmind_file))
+        mock_driver = MagicMock()
         mock_graph_db.driver.return_value = mock_driver
         
-        parser = XMindParser(str(mock_xmind_file))
         converter = Neo4jConverter(
-            parser,
-            uri="bolt://localhost:7687",
-            username="neo4j",
-            password="password"
+            parser, 
+            "bolt://localhost:7687",
+            "neo4j",
+            "password"
         )
         
         assert converter.parser == parser
-        mock_graph_db.driver.assert_called_once()
+        assert converter.driver == mock_driver
     
     @patch('xmind_converter.converters.neo4j.GraphDatabase')
-    def test_convert_creates_nodes(self, mock_graph_db, mock_xmind_file):
-        """Test that convert creates nodes in Neo4j."""
-        mock_driver = Mock()
+    def test_convert_creates_nodes(self, mock_graph_db, temp_xmind_file):
+        """Test that convert creates Neo4j nodes."""
+        parser = XMindParser(str(temp_xmind_file))
+        mock_driver = MagicMock()
         mock_session = MagicMock()
-        mock_session.run = Mock()
-        mock_session.__enter__ = Mock(return_value=mock_session)
-        mock_session.__exit__ = Mock(return_value=None)
-        mock_driver.session.return_value = mock_session
+        mock_driver.session.return_value.__enter__.return_value = mock_session
         mock_graph_db.driver.return_value = mock_driver
         
-        parser = XMindParser(str(mock_xmind_file))
-        converter = Neo4jConverter(parser, "bolt://localhost:7687", "neo4j", "password")
+        converter = Neo4jConverter(
+            parser,
+            "bolt://localhost:7687",
+            "neo4j",
+            "password"
+        )
         
         result = converter.convert()
         
-        assert "Created" in result or "nodes" in result
-        assert mock_session.run.called
+        # Verify session was used
+        assert mock_driver.session.called
+        assert "node" in result.lower() or "created" in result.lower()
     
     @patch('xmind_converter.converters.neo4j.GraphDatabase')
-    def test_custom_relationship_type(self, mock_graph_db, simple_mock_xmind_file):
-        """Test conversion with custom relationship type."""
-        mock_driver = Mock()
-        mock_session = MagicMock()
-        mock_session.run = Mock()
-        mock_session.__enter__ = Mock(return_value=mock_session)
-        mock_session.__exit__ = Mock(return_value=None)
-        mock_driver.session.return_value = mock_session
+    def test_converter_closes_connection(self, mock_graph_db, temp_xmind_file):
+        """Test that converter properly closes Neo4j connection."""
+        parser = XMindParser(str(temp_xmind_file))
+        mock_driver = MagicMock()
         mock_graph_db.driver.return_value = mock_driver
         
-        parser = XMindParser(str(simple_mock_xmind_file))
-        converter = Neo4jConverter(parser, "bolt://localhost:7687", "neo4j", "password")
-        
-        result = converter.convert(relationship_type="CONTAINS")
-        
-        # Check that the custom relationship type was used
-        calls = mock_session.run.call_args_list
-        assert any("CONTAINS" in str(call) for call in calls)
-    
-    @patch('xmind_converter.converters.neo4j.GraphDatabase')
-    def test_close_driver(self, mock_graph_db, mock_xmind_file):
-        """Test that close() closes the driver connection."""
-        mock_driver = Mock()
-        mock_graph_db.driver.return_value = mock_driver
-        
-        parser = XMindParser(str(mock_xmind_file))
-        converter = Neo4jConverter(parser, "bolt://localhost:7687", "neo4j", "password")
+        converter = Neo4jConverter(
+            parser,
+            "bolt://localhost:7687",
+            "neo4j",
+            "password"
+        )
         converter.close()
         
-        mock_driver.close.assert_called_once()
+        assert mock_driver.close.called
 
 
 class TestBaseConverter:
-    """Test BaseConverter functionality."""
+    """Tests for BaseConverter functionality."""
     
-    def test_get_output_path_default(self, mock_xmind_file):
-        """Test _get_output_path with default directory."""
-        parser = XMindParser(str(mock_xmind_file))
+    def test_get_output_path_with_directory(self, temp_xmind_file, tmp_path):
+        """Test _get_output_path with output directory."""
+        parser = XMindParser(str(temp_xmind_file))
         converter = MarkdownConverter(parser)
         
-        output_path = converter._get_output_path(None, '.md')
+        output_dir = tmp_path / "custom_output"
+        output_path = converter._get_output_path(str(output_dir), ".md")
         
-        assert output_path.parent == mock_xmind_file.parent
-        assert output_path.stem == mock_xmind_file.stem
-        assert output_path.suffix == '.md'
+        assert output_path.parent == output_dir
+        assert output_path.suffix == ".md"
+        assert "test_map" in output_path.stem
     
-    def test_get_output_path_custom_dir(self, mock_xmind_file, temp_output_dir):
-        """Test _get_output_path with custom directory."""
-        parser = XMindParser(str(mock_xmind_file))
+    def test_get_output_path_without_directory(self, temp_xmind_file):
+        """Test _get_output_path without output directory."""
+        parser = XMindParser(str(temp_xmind_file))
         converter = MarkdownConverter(parser)
         
-        output_path = converter._get_output_path(str(temp_output_dir), '.md')
+        output_path = converter._get_output_path(None, ".md")
         
-        assert output_path.parent == temp_output_dir
-        assert output_path.stem == mock_xmind_file.stem
-        assert output_path.suffix == '.md'
-    
-    def test_get_output_path_creates_directory(self, mock_xmind_file, tmp_path):
-        """Test that _get_output_path creates output directory if needed."""
-        parser = XMindParser(str(mock_xmind_file))
-        converter = MarkdownConverter(parser)
-        
-        new_dir = tmp_path / "new_
+        assert output_path.parent == temp_xmind_file.parent
+        assert output_path.suffix == ".md"

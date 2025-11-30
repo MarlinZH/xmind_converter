@@ -1,7 +1,9 @@
-"""Pytest fixtures and configuration for XMind Converter tests."""
+"""
+Pytest configuration and shared fixtures.
+"""
 import pytest
-import tempfile
 import json
+import tempfile
 import zipfile
 from pathlib import Path
 from typing import Dict, Any
@@ -9,33 +11,45 @@ from typing import Dict, Any
 
 @pytest.fixture
 def sample_xmind_data() -> Dict[str, Any]:
-    """Return sample XMind map data structure."""
+    """Sample XMind mind map data structure."""
     return [
         {
-            "title": "Sheet1",
+            "id": "root",
+            "title": "Test Mind Map",
             "topic": {
+                "id": "root_topic",
                 "title": "Project Planning",
                 "topics": [
                     {
-                        "title": "Research",
+                        "id": "topic1",
+                        "title": "Phase 1",
                         "topics": [
-                            {"title": "Market Analysis"},
-                            {"title": "Competitor Study"}
+                            {"id": "topic1a", "title": "Research"},
+                            {"id": "topic1b", "title": "Analysis"}
                         ]
                     },
                     {
-                        "title": "Development",
+                        "id": "topic2",
+                        "title": "Phase 2",
                         "topics": [
-                            {"title": "Backend"},
-                            {"title": "Frontend"},
-                            {"title": "Testing"}
+                            {"id": "topic2a", "title": "Design"},
+                            {"id": "topic2b", "title": "Development"},
+                            {
+                                "id": "topic2c",
+                                "title": "Testing",
+                                "topics": [
+                                    {"id": "topic2c1", "title": "Unit Tests"},
+                                    {"id": "topic2c2", "title": "Integration Tests"}
+                                ]
+                            }
                         ]
                     },
                     {
-                        "title": "Launch",
+                        "id": "topic3",
+                        "title": "Phase 3",
                         "topics": [
-                            {"title": "Marketing"},
-                            {"title": "Support"}
+                            {"id": "topic3a", "title": "Deployment"},
+                            {"id": "topic3b", "title": "Monitoring"}
                         ]
                     }
                 ]
@@ -46,16 +60,18 @@ def sample_xmind_data() -> Dict[str, Any]:
 
 @pytest.fixture
 def simple_xmind_data() -> Dict[str, Any]:
-    """Return simple XMind map with minimal structure."""
+    """Simple XMind data with minimal structure."""
     return [
         {
-            "title": "Sheet1",
+            "id": "root",
+            "title": "Simple Map",
             "topic": {
-                "title": "Root",
+                "id": "root_topic",
+                "title": "Main Topic",
                 "topics": [
-                    {"title": "Child 1"},
-                    {"title": "Child 2"},
-                    {"title": "Child 3"}
+                    {"id": "sub1", "title": "Subtopic 1"},
+                    {"id": "sub2", "title": "Subtopic 2"},
+                    {"id": "sub3", "title": "Subtopic 3"}
                 ]
             }
         }
@@ -63,127 +79,55 @@ def simple_xmind_data() -> Dict[str, Any]:
 
 
 @pytest.fixture
-def deep_xmind_data() -> Dict[str, Any]:
-    """Return XMind map with deep nesting (5 levels)."""
-    return [
-        {
-            "title": "Sheet1",
-            "topic": {
-                "title": "Level 1",
-                "topics": [
-                    {
-                        "title": "Level 2",
-                        "topics": [
-                            {
-                                "title": "Level 3",
-                                "topics": [
-                                    {
-                                        "title": "Level 4",
-                                        "topics": [
-                                            {"title": "Level 5"}
-                                        ]
-                                    }
-                                ]
-                            }
-                        ]
-                    }
-                ]
+def temp_xmind_file(sample_xmind_data, tmp_path):
+    """Create a temporary XMind file for testing."""
+    xmind_path = tmp_path / "test_map.xmind"
+    
+    # Create a minimal XMind file structure
+    with zipfile.ZipFile(xmind_path, 'w') as zf:
+        # Add content.json
+        content = json.dumps(sample_xmind_data, indent=2)
+        zf.writestr('content.json', content)
+        
+        # Add manifest.json
+        manifest = {
+            "file-entries": {
+                "content.json": {},
+                "metadata.json": {}
             }
         }
-    ]
-
-
-@pytest.fixture
-def mock_xmind_file(tmp_path: Path, sample_xmind_data: Dict) -> Path:
-    """Create a mock .xmind file for testing.
-    
-    Note: This creates a minimal XMind file structure.
-    Real XMind files are zip archives with JSON content.
-    """
-    xmind_file = tmp_path / "test.xmind"
-    
-    # Create a zip file mimicking XMind structure
-    with zipfile.ZipFile(xmind_file, 'w', zipfile.ZIP_DEFLATED) as zf:
-        # Add content.json (the main data file)
-        content_json = json.dumps(sample_xmind_data, indent=2)
-        zf.writestr('content.json', content_json)
+        zf.writestr('manifest.json', json.dumps(manifest))
         
         # Add metadata.json
         metadata = {
             "creator": {
-                "name": "XMind",
-                "version": "23.11"
-            },
-            "modified": "2024-01-01T00:00:00Z"
+                "name": "Test Suite",
+                "version": "1.0.0"
+            }
         }
-        zf.writestr('metadata.json', json.dumps(metadata, indent=2))
+        zf.writestr('metadata.json', json.dumps(metadata))
     
-    return xmind_file
+    return xmind_path
 
 
 @pytest.fixture
-def simple_mock_xmind_file(tmp_path: Path, simple_xmind_data: Dict) -> Path:
-    """Create a simple mock .xmind file."""
-    xmind_file = tmp_path / "simple.xmind"
+def simple_xmind_file(simple_xmind_data, tmp_path):
+    """Create a simple temporary XMind file for testing."""
+    xmind_path = tmp_path / "simple_map.xmind"
     
-    with zipfile.ZipFile(xmind_file, 'w', zipfile.ZIP_DEFLATED) as zf:
-        content_json = json.dumps(simple_xmind_data, indent=2)
-        zf.writestr('content.json', content_json)
+    with zipfile.ZipFile(xmind_path, 'w') as zf:
+        content = json.dumps(simple_xmind_data, indent=2)
+        zf.writestr('content.json', content)
         
-        metadata = {"creator": {"name": "XMind", "version": "23.11"}}
-        zf.writestr('metadata.json', json.dumps(metadata, indent=2))
+        manifest = {"file-entries": {"content.json": {}}}
+        zf.writestr('manifest.json', json.dumps(manifest))
     
-    return xmind_file
+    return xmind_path
 
 
 @pytest.fixture
-def deep_mock_xmind_file(tmp_path: Path, deep_xmind_data: Dict) -> Path:
-    """Create a deep nested mock .xmind file."""
-    xmind_file = tmp_path / "deep.xmind"
-    
-    with zipfile.ZipFile(xmind_file, 'w', zipfile.ZIP_DEFLATED) as zf:
-        content_json = json.dumps(deep_xmind_data, indent=2)
-        zf.writestr('content.json', content_json)
-        
-        metadata = {"creator": {"name": "XMind", "version": "23.11"}}
-        zf.writestr('metadata.json', json.dumps(metadata, indent=2))
-    
-    return xmind_file
-
-
-@pytest.fixture
-def temp_output_dir(tmp_path: Path) -> Path:
-    """Create a temporary output directory for test files."""
-    output_dir = tmp_path / "output"
-    output_dir.mkdir()
-    return output_dir
-
-
-@pytest.fixture
-def mock_notion_client():
-    """Mock Notion client for testing without API calls."""
-    from unittest.mock import Mock, MagicMock
-    
-    client = Mock()
-    client.pages = MagicMock()
-    client.pages.create = Mock(return_value={"id": "mock-page-id", "url": "https://notion.so/mock"})
-    client.databases = MagicMock()
-    client.databases.query = Mock(return_value={"results": []})
-    
-    return client
-
-
-@pytest.fixture
-def mock_neo4j_driver():
-    """Mock Neo4j driver for testing without database connection."""
-    from unittest.mock import Mock, MagicMock
-    
-    driver = Mock()
-    session = MagicMock()
-    session.run = Mock(return_value=Mock(data=Mock(return_value=[])))
-    session.__enter__ = Mock(return_value=session)
-    session.__exit__ = Mock(return_value=None)
-    driver.session = Mock(return_value=session)
-    driver.close = Mock()
-    
-    return driver
+def output_dir(tmp_path):
+    """Create a temporary output directory."""
+    output = tmp_path / "output"
+    output.mkdir()
+    return output
