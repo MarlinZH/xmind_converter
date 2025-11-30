@@ -3,92 +3,63 @@ Pytest configuration and shared fixtures.
 """
 import pytest
 import json
-import tempfile
 import zipfile
 from pathlib import Path
-from typing import Dict, Any
+import tempfile
+import shutil
 
 
-@pytest.fixture
-def sample_xmind_data() -> Dict[str, Any]:
-    """Sample XMind mind map data structure."""
-    return [
-        {
-            "id": "root",
-            "title": "Test Mind Map",
-            "topic": {
-                "id": "root_topic",
-                "title": "Project Planning",
+@pytest.fixture(scope="session")
+def temp_dir():
+    """Create a temporary directory for test outputs."""
+    temp = tempfile.mkdtemp()
+    yield Path(temp)
+    shutil.rmtree(temp)
+
+
+@pytest.fixture(scope="session")
+def fixtures_dir():
+    """Get the fixtures directory path."""
+    return Path(__file__).parent / "fixtures"
+
+
+@pytest.fixture(scope="session")
+def sample_xmind(fixtures_dir, temp_dir):
+    """Create a simple sample XMind file for testing."""
+    xmind_path = temp_dir / "sample.xmind"
+    
+    # Create the XMind structure
+    content_json = {
+        "id": "root",
+        "title": "Project Management",
+        "topics": [
+            {
+                "id": "topic1",
+                "title": "Planning",
                 "topics": [
-                    {
-                        "id": "topic1",
-                        "title": "Phase 1",
-                        "topics": [
-                            {"id": "topic1a", "title": "Research"},
-                            {"id": "topic1b", "title": "Analysis"}
-                        ]
-                    },
-                    {
-                        "id": "topic2",
-                        "title": "Phase 2",
-                        "topics": [
-                            {"id": "topic2a", "title": "Design"},
-                            {"id": "topic2b", "title": "Development"},
-                            {
-                                "id": "topic2c",
-                                "title": "Testing",
-                                "topics": [
-                                    {"id": "topic2c1", "title": "Unit Tests"},
-                                    {"id": "topic2c2", "title": "Integration Tests"}
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        "id": "topic3",
-                        "title": "Phase 3",
-                        "topics": [
-                            {"id": "topic3a", "title": "Deployment"},
-                            {"id": "topic3b", "title": "Monitoring"}
-                        ]
-                    }
+                    {"id": "topic1-1", "title": "Requirements"},
+                    {"id": "topic1-2", "title": "Timeline"}
                 ]
-            }
-        }
-    ]
-
-
-@pytest.fixture
-def simple_xmind_data() -> Dict[str, Any]:
-    """Simple XMind data with minimal structure."""
-    return [
-        {
-            "id": "root",
-            "title": "Simple Map",
-            "topic": {
-                "id": "root_topic",
-                "title": "Main Topic",
+            },
+            {
+                "id": "topic2",
+                "title": "Execution",
                 "topics": [
-                    {"id": "sub1", "title": "Subtopic 1"},
-                    {"id": "sub2", "title": "Subtopic 2"},
-                    {"id": "sub3", "title": "Subtopic 3"}
+                    {"id": "topic2-1", "title": "Development"},
+                    {"id": "topic2-2", "title": "Testing"}
                 ]
+            },
+            {
+                "id": "topic3",
+                "title": "Review"
             }
-        }
-    ]
-
-
-@pytest.fixture
-def temp_xmind_file(sample_xmind_data, tmp_path):
-    """Create a temporary XMind file for testing."""
-    xmind_path = tmp_path / "test_map.xmind"
+        ]
+    }
     
     # Create a minimal XMind file structure
-    with zipfile.ZipFile(xmind_path, 'w') as zf:
+    with zipfile.ZipFile(xmind_path, 'w') as xmind_zip:
         # Add content.json
-        content = json.dumps(sample_xmind_data, indent=2)
-        zf.writestr('content.json', content)
-        
+        xmind_zip.writestr('content.json', json.dumps([{"topic": content_json}]))
         # Add manifest.json
         manifest = {
             "file-entries": {
@@ -96,38 +67,95 @@ def temp_xmind_file(sample_xmind_data, tmp_path):
                 "metadata.json": {}
             }
         }
-        zf.writestr('manifest.json', json.dumps(manifest))
-        
+        xmind_zip.writestr('manifest.json', json.dumps(manifest))
         # Add metadata.json
-        metadata = {
-            "creator": {
-                "name": "Test Suite",
-                "version": "1.0.0"
+        metadata = {"creator": {"name": "test", "version": "1.0"}}
+        xmind_zip.writestr('metadata.json', json.dumps(metadata))
+    
+    return xmind_path
+
+
+@pytest.fixture(scope="session")
+def complex_xmind(fixtures_dir, temp_dir):
+    """Create a more complex XMind file for testing."""
+    xmind_path = temp_dir / "complex.xmind"
+    
+    content_json = {
+        "id": "root",
+        "title": "Software Architecture",
+        "topics": [
+            {
+                "id": "frontend",
+                "title": "Frontend",
+                "topics": [
+                    {
+                        "id": "react",
+                        "title": "React",
+                        "topics": [
+                            {"id": "components", "title": "Components"},
+                            {"id": "hooks", "title": "Hooks"},
+                            {"id": "routing", "title": "Routing"}
+                        ]
+                    },
+                    {
+                        "id": "styling",
+                        "title": "Styling",
+                        "topics": [
+                            {"id": "css", "title": "CSS"},
+                            {"id": "tailwind", "title": "Tailwind"}
+                        ]
+                    }
+                ]
+            },
+            {
+                "id": "backend",
+                "title": "Backend",
+                "topics": [
+                    {
+                        "id": "api",
+                        "title": "API",
+                        "topics": [
+                            {"id": "rest", "title": "REST"},
+                            {"id": "graphql", "title": "GraphQL"}
+                        ]
+                    },
+                    {"id": "database", "title": "Database"}
+                ]
+            },
+            {
+                "id": "devops",
+                "title": "DevOps",
+                "topics": [
+                    {"id": "ci", "title": "CI/CD"},
+                    {"id": "docker", "title": "Docker"},
+                    {"id": "k8s", "title": "Kubernetes"}
+                ]
             }
-        }
-        zf.writestr('metadata.json', json.dumps(metadata))
+        ]
+    }
+    
+    with zipfile.ZipFile(xmind_path, 'w') as xmind_zip:
+        xmind_zip.writestr('content.json', json.dumps([{"topic": content_json}]))
+        manifest = {"file-entries": {"content.json": {}, "metadata.json": {}}}
+        xmind_zip.writestr('manifest.json', json.dumps(manifest))
+        metadata = {"creator": {"name": "test", "version": "1.0"}}
+        xmind_zip.writestr('metadata.json', json.dumps(metadata))
     
     return xmind_path
 
 
 @pytest.fixture
-def simple_xmind_file(simple_xmind_data, tmp_path):
-    """Create a simple temporary XMind file for testing."""
-    xmind_path = tmp_path / "simple_map.xmind"
-    
-    with zipfile.ZipFile(xmind_path, 'w') as zf:
-        content = json.dumps(simple_xmind_data, indent=2)
-        zf.writestr('content.json', content)
-        
-        manifest = {"file-entries": {"content.json": {}}}
-        zf.writestr('manifest.json', json.dumps(manifest))
-    
-    return xmind_path
+def mock_notion_client(mocker):
+    """Mock Notion client for testing."""
+    mock_client = mocker.Mock()
+    mock_client.pages.create.return_value = {"id": "test-page-id"}
+    return mock_client
 
 
 @pytest.fixture
-def output_dir(tmp_path):
-    """Create a temporary output directory."""
-    output = tmp_path / "output"
-    output.mkdir()
-    return output
+def mock_neo4j_driver(mocker):
+    """Mock Neo4j driver for testing."""
+    mock_driver = mocker.Mock()
+    mock_session = mocker.Mock()
+    mock_driver.session.return_value.__enter__.return_value = mock_session
+    return mock_driver

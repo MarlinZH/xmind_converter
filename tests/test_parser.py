@@ -2,148 +2,165 @@
 Unit tests for XMindParser.
 """
 import pytest
+import pandas as pd
 from pathlib import Path
+
 from xmind_converter.core.parser import XMindParser
 
 
-class TestXMindParserInitialization:
-    """Tests for XMindParser initialization."""
+class TestXMindParser:
+    """Test XMindParser functionality."""
     
-    def test_parser_loads_valid_file(self, temp_xmind_file):
-        """Test that parser successfully loads a valid XMind file."""
-        parser = XMindParser(str(temp_xmind_file))
+    def test_parser_initialization(self, sample_xmind):
+        """Test parser can be initialized with valid file."""
+        parser = XMindParser(str(sample_xmind))
         assert parser is not None
-        assert parser.file_path == temp_xmind_file
+        assert parser.file_path == sample_xmind
     
-    def test_parser_raises_error_for_nonexistent_file(self):
-        """Test that parser raises FileNotFoundError for missing files."""
+    def test_parser_file_not_found(self, temp_dir):
+        """Test parser raises error for non-existent file."""
         with pytest.raises(FileNotFoundError):
-            XMindParser("/path/to/nonexistent/file.xmind")
+            XMindParser(str(temp_dir / "nonexistent.xmind"))
     
-    def test_parser_raises_error_for_wrong_extension(self, tmp_path):
-        """Test that parser raises ValueError for non-.xmind files."""
-        wrong_file = tmp_path / "test.txt"
-        wrong_file.write_text("test")
+    def test_parser_invalid_extension(self, temp_dir):
+        """Test parser raises error for non-.xmind file."""
+        invalid_file = temp_dir / "test.txt"
+        invalid_file.touch()
         
         with pytest.raises(ValueError, match="must have .xmind extension"):
-            XMindParser(str(wrong_file))
-
-
-class TestXMindParserProperties:
-    """Tests for XMindParser properties."""
+            XMindParser(str(invalid_file))
     
-    def test_root_title(self, temp_xmind_file):
-        """Test that root_title returns the correct title."""
-        parser = XMindParser(str(temp_xmind_file))
-        assert parser.root_title == "Project Planning"
+    def test_root_title(self, sample_xmind):
+        """Test getting root topic title."""
+        parser = XMindParser(str(sample_xmind))
+        assert parser.root_title == "Project Management"
     
-    def test_root_topic(self, temp_xmind_file):
-        """Test that root_topic returns a dictionary."""
-        parser = XMindParser(str(temp_xmind_file))
+    def test_root_topic(self, sample_xmind):
+        """Test getting root topic."""
+        parser = XMindParser(str(sample_xmind))
         root = parser.root_topic
-        assert isinstance(root, dict)
-        assert "title" in root
+        assert root["title"] == "Project Management"
         assert "topics" in root
     
-    def test_topic_hierarchy(self, temp_xmind_file):
-        """Test that topic_hierarchy returns first-level topics."""
-        parser = XMindParser(str(temp_xmind_file))
+    def test_topic_hierarchy(self, sample_xmind):
+        """Test getting first-level topics."""
+        parser = XMindParser(str(sample_xmind))
         hierarchy = parser.topic_hierarchy
-        assert isinstance(hierarchy, list)
-        assert len(hierarchy) == 3  # Phase 1, Phase 2, Phase 3
-        assert hierarchy[0]["title"] == "Phase 1"
-
-
-class TestXMindParserDepth:
-    """Tests for depth calculation."""
+        assert len(hierarchy) == 3
+        assert hierarchy[0]["title"] == "Planning"
+        assert hierarchy[1]["title"] == "Execution"
+        assert hierarchy[2]["title"] == "Review"
     
-    def test_get_max_depth_simple(self, simple_xmind_file):
-        """Test max depth calculation for simple structure."""
-        parser = XMindParser(str(simple_xmind_file))
-        depth = parser.get_max_depth()
-        assert depth == 1  # Only one level below root
+    def test_get_max_depth_simple(self, sample_xmind):
+        """Test calculating max depth for simple map."""
+        parser = XMindParser(str(sample_xmind))
+        # Planning -> Requirements (2 levels)
+        # Execution -> Development (2 levels)
+        # Review (1 level)
+        max_depth = parser.get_max_depth()
+        assert max_depth == 2
     
-    def test_get_max_depth_nested(self, temp_xmind_file):
-        """Test max depth calculation for nested structure."""
-        parser = XMindParser(str(temp_xmind_file))
-        depth = parser.get_max_depth()
-        assert depth == 3  # Phase 2 -> Testing -> Unit Tests/Integration Tests
-
-
-class TestXMindParserTopicExtraction:
-    """Tests for topic extraction methods."""
+    def test_get_max_depth_complex(self, complex_xmind):
+        """Test calculating max depth for complex map."""
+        parser = XMindParser(str(complex_xmind))
+        # Frontend -> React -> Components (3 levels)
+        max_depth = parser.get_max_depth()
+        assert max_depth == 3
     
-    def test_get_all_topics_includes_root(self, temp_xmind_file):
-        """Test that get_all_topics includes root by default."""
-        parser = XMindParser(str(temp_xmind_file))
+    def test_get_all_topics_with_root(self, sample_xmind):
+        """Test getting all topics including root."""
+        parser = XMindParser(str(sample_xmind))
         topics = parser.get_all_topics(include_root=True)
-        assert "Project Planning" in topics
-        assert len(topics) == 12  # 1 root + 3 phases + 8 subtopics
+        
+        assert "Project Management" in topics
+        assert "Planning" in topics
+        assert "Requirements" in topics
+        assert "Timeline" in topics
+        assert "Execution" in topics
+        assert "Development" in topics
+        assert "Testing" in topics
+        assert "Review" in topics
+        assert len(topics) == 8
     
-    def test_get_all_topics_excludes_root(self, temp_xmind_file):
-        """Test that get_all_topics can exclude root."""
-        parser = XMindParser(str(temp_xmind_file))
+    def test_get_all_topics_without_root(self, sample_xmind):
+        """Test getting all topics excluding root."""
+        parser = XMindParser(str(sample_xmind))
         topics = parser.get_all_topics(include_root=False)
-        assert "Project Planning" not in topics
-        assert len(topics) == 11  # All except root
+        
+        assert "Project Management" not in topics
+        assert "Planning" in topics
+        assert len(topics) == 7
     
-    def test_get_all_topics_content(self, simple_xmind_file):
-        """Test that get_all_topics returns correct topics."""
-        parser = XMindParser(str(simple_xmind_file))
-        topics = parser.get_all_topics(include_root=False)
-        assert "Subtopic 1" in topics
-        assert "Subtopic 2" in topics
-        assert "Subtopic 3" in topics
-
-
-class TestXMindParserConversions:
-    """Tests for data conversion methods."""
-    
-    def test_to_dict(self, temp_xmind_file):
-        """Test that to_dict returns valid dictionary."""
-        parser = XMindParser(str(temp_xmind_file))
+    def test_to_dict(self, sample_xmind):
+        """Test converting to dictionary."""
+        parser = XMindParser(str(sample_xmind))
         data = parser.to_dict()
+        
         assert isinstance(data, list)
         assert len(data) > 0
         assert "topic" in data[0]
     
-    def test_to_dataframe(self, temp_xmind_file):
-        """Test that to_dataframe returns valid DataFrame."""
-        parser = XMindParser(str(temp_xmind_file))
+    def test_to_dataframe(self, sample_xmind):
+        """Test converting to DataFrame."""
+        parser = XMindParser(str(sample_xmind))
         df = parser.to_dataframe()
         
+        assert isinstance(df, pd.DataFrame)
         assert len(df) > 0
         assert "Level 1" in df.columns
         assert "Level 2" in df.columns
-        assert df["Level 1"].iloc[0] == "Project Planning"
+        assert "Level 3" in df.columns
     
-    def test_to_markdown(self, temp_xmind_file):
-        """Test that to_markdown generates valid markdown."""
-        parser = XMindParser(str(temp_xmind_file))
+    def test_to_dataframe_structure(self, sample_xmind):
+        """Test DataFrame has correct structure."""
+        parser = XMindParser(str(sample_xmind))
+        df = parser.to_dataframe()
+        
+        # Check that all Level 1 values are the root
+        assert all(df["Level 1"] == "Project Management")
+        
+        # Check that Level 2 contains our main topics
+        level_2_values = df["Level 2"].dropna().unique()
+        assert "Planning" in level_2_values
+        assert "Execution" in level_2_values
+        assert "Review" in level_2_values
+    
+    def test_to_markdown(self, sample_xmind):
+        """Test converting to Markdown."""
+        parser = XMindParser(str(sample_xmind))
         markdown = parser.to_markdown()
         
         assert isinstance(markdown, str)
-        assert "# [[Project Planning]]" in markdown
-        assert "[[Phase 1]]" in markdown
-        assert "[[Research]]" in markdown
+        assert "# [[Project Management]]" in markdown
+        assert "[[Planning]]" in markdown
+        assert "[[Requirements]]" in markdown
     
-    def test_to_markdown_has_wiki_links(self, simple_xmind_file):
-        """Test that markdown output uses wiki-style links."""
-        parser = XMindParser(str(simple_xmind_file))
+    def test_to_markdown_wiki_links(self, sample_xmind):
+        """Test that Markdown uses wiki-style links."""
+        parser = XMindParser(str(sample_xmind))
         markdown = parser.to_markdown()
         
-        assert "[[Main Topic]]" in markdown
-        assert "[[Subtopic 1]]" in markdown
-
-
-class TestXMindParserRepresentation:
-    """Tests for string representation."""
+        # Check for wiki-style [[ ]] links
+        assert "[[" in markdown
+        assert "]]" in markdown
     
-    def test_repr(self, temp_xmind_file):
-        """Test __repr__ method."""
-        parser = XMindParser(str(temp_xmind_file))
+    def test_repr(self, sample_xmind):
+        """Test string representation."""
+        parser = XMindParser(str(sample_xmind))
         repr_str = repr(parser)
         
         assert "XMindParser" in repr_str
-        assert "test_map.xmind" in repr_str
+        assert "sample.xmind" in repr_str
         assert "topics=" in repr_str
+    
+    def test_has_subtopics_true(self, sample_xmind):
+        """Test _has_subtopics returns True for nodes with children."""
+        parser = XMindParser(str(sample_xmind))
+        planning_node = parser.topic_hierarchy[0]
+        assert parser._has_subtopics(planning_node) is True
+    
+    def test_has_subtopics_false(self, sample_xmind):
+        """Test _has_subtopics returns False for leaf nodes."""
+        parser = XMindParser(str(sample_xmind))
+        review_node = parser.topic_hierarchy[2]
+        assert parser._has_subtopics(review_node) is False
