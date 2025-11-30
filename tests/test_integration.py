@@ -63,4 +63,43 @@ class TestIntegration:
         assert Path(csv_path).exists()
         
         # Verify CSV has 3+ levels
-        df =
+        df = pd.read_csv(csv_path)
+        assert "Level 3" in df.columns
+        
+        # Verify markdown has nested structure
+        content = Path(md_path).read_text()
+        assert "Software Architecture" in content
+        assert "Frontend" in content
+        assert "React" in content
+        assert "Components" in content
+    
+    def test_dataframe_to_csv_consistency(self, sample_xmind, temp_dir):
+        """Test that DataFrame and CSV output are consistent."""
+        parser = XMindParser(str(sample_xmind))
+        
+        # Get DataFrame directly
+        df_direct = parser.to_dataframe()
+        
+        # Get DataFrame from saved CSV
+        converter = CSVConverter(parser)
+        csv_path = converter.convert(output_dir=str(temp_dir))
+        df_from_csv = pd.read_csv(csv_path)
+        
+        # Should be identical
+        pd.testing.assert_frame_equal(df_direct, df_from_csv)
+    
+    def test_parser_methods_consistency(self, sample_xmind):
+        """Test that different parser methods return consistent data."""
+        parser = XMindParser(str(sample_xmind))
+        
+        # Get topics via different methods
+        all_topics = parser.get_all_topics(include_root=True)
+        df = parser.to_dataframe()
+        markdown = parser.to_markdown()
+        
+        # All should contain the same topics
+        for topic in ["Planning", "Requirements", "Timeline"]:
+            assert topic in all_topics
+            assert topic in markdown
+            # Topic should appear in at least one cell in DataFrame
+            assert df.isin([topic]).any().any()
