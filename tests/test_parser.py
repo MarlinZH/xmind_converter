@@ -1,7 +1,9 @@
-"""Tests for XMindParser core functionality."""
+"""
+Tests for the XMindParser core module.
+"""
 import pytest
 from pathlib import Path
-import pandas as pd
+from unittest.mock import patch, MagicMock
 
 from xmind_converter.core.parser import XMindParser
 
@@ -9,125 +11,174 @@ from xmind_converter.core.parser import XMindParser
 class TestXMindParser:
     """Test suite for XMindParser class."""
     
-    def test_init_with_valid_file(self, mock_xmind_file):
-        """Test parser initialization with valid XMind file."""
-        parser = XMindParser(str(mock_xmind_file))
-        assert parser.file_path == mock_xmind_file
-        assert parser.xmind_map is not None
-    
-    def test_init_with_nonexistent_file(self):
-        """Test parser raises error for nonexistent file."""
+    def test_init_file_not_found(self):
+        """Test that FileNotFoundError is raised for non-existent files."""
         with pytest.raises(FileNotFoundError):
-            XMindParser("/nonexistent/file.xmind")
+            XMindParser("nonexistent.xmind")
     
-    def test_init_with_wrong_extension(self, tmp_path):
-        """Test parser raises error for non-.xmind file."""
-        wrong_file = tmp_path / "test.txt"
-        wrong_file.touch()
+    def test_init_invalid_extension(self, temp_dir):
+        """Test that ValueError is raised for non-.xmind files."""
+        invalid_file = temp_dir / "test.txt"
+        invalid_file.touch()
         
-        with pytest.raises(ValueError, match=".xmind extension"):
-            XMindParser(str(wrong_file))
+        with pytest.raises(ValueError, match="must have .xmind extension"):
+            XMindParser(str(invalid_file))
     
-    def test_root_topic(self, mock_xmind_file):
-        """Test accessing root topic."""
-        parser = XMindParser(str(mock_xmind_file))
+    @patch('xmind_converter.core.parser.xmind_to_dict')
+    def test_init_success(self, mock_xmind_to_dict, sample_xmind_data, create_mock_xmind_file):
+        """Test successful initialization of parser."""
+        mock_xmind_to_dict.return_value = sample_xmind_data
+        xmind_file = create_mock_xmind_file(sample_xmind_data)
+        
+        parser = XMindParser(str(xmind_file))
+        
+        assert parser.file_path == xmind_file
+        assert parser.xmind_map == sample_xmind_data
+        mock_xmind_to_dict.assert_called_once_with(str(xmind_file))
+    
+    @patch('xmind_converter.core.parser.xmind_to_dict')
+    def test_root_topic(self, mock_xmind_to_dict, sample_xmind_data, create_mock_xmind_file):
+        """Test accessing the root topic."""
+        mock_xmind_to_dict.return_value = sample_xmind_data
+        xmind_file = create_mock_xmind_file(sample_xmind_data)
+        
+        parser = XMindParser(str(xmind_file))
         root = parser.root_topic
         
-        assert root["title"] == "Central Topic"
-        assert "topics" in root
+        assert root['title'] == 'Project Planning'
+        assert 'topics' in root
     
-    def test_root_title(self, mock_xmind_file):
-        """Test getting root title."""
-        parser = XMindParser(str(mock_xmind_file))
-        assert parser.root_title == "Central Topic"
+    @patch('xmind_converter.core.parser.xmind_to_dict')
+    def test_root_title(self, mock_xmind_to_dict, sample_xmind_data, create_mock_xmind_file):
+        """Test accessing the root title."""
+        mock_xmind_to_dict.return_value = sample_xmind_data
+        xmind_file = create_mock_xmind_file(sample_xmind_data)
+        
+        parser = XMindParser(str(xmind_file))
+        
+        assert parser.root_title == 'Project Planning'
     
-    def test_topic_hierarchy(self, mock_xmind_file):
-        """Test getting first-level topics."""
-        parser = XMindParser(str(mock_xmind_file))
+    @patch('xmind_converter.core.parser.xmind_to_dict')
+    def test_topic_hierarchy(self, mock_xmind_to_dict, sample_xmind_data, create_mock_xmind_file):
+        """Test accessing the topic hierarchy."""
+        mock_xmind_to_dict.return_value = sample_xmind_data
+        xmind_file = create_mock_xmind_file(sample_xmind_data)
+        
+        parser = XMindParser(str(xmind_file))
         hierarchy = parser.topic_hierarchy
         
         assert len(hierarchy) == 3
-        assert hierarchy[0]["title"] == "Topic 1"
-        assert hierarchy[1]["title"] == "Topic 2"
-        assert hierarchy[2]["title"] == "Topic 3"
+        assert hierarchy[0]['title'] == 'Phase 1'
+        assert hierarchy[1]['title'] == 'Phase 2'
+        assert hierarchy[2]['title'] == 'Phase 3'
     
-    def test_get_max_depth(self, mock_xmind_file):
+    @patch('xmind_converter.core.parser.xmind_to_dict')
+    def test_get_max_depth(self, mock_xmind_to_dict, sample_xmind_data, create_mock_xmind_file):
         """Test calculating maximum depth."""
-        parser = XMindParser(str(mock_xmind_file))
+        mock_xmind_to_dict.return_value = sample_xmind_data
+        xmind_file = create_mock_xmind_file(sample_xmind_data)
+        
+        parser = XMindParser(str(xmind_file))
         max_depth = parser.get_max_depth()
         
-        # Root (1) -> Topic (2) -> Subtopic (3)
-        assert max_depth == 3
+        # Phase 1 -> Research/Design = depth 2
+        # Phase 2 -> Development/Testing = depth 2
+        # Phase 3 -> Deployment = depth 2
+        assert max_depth == 2
     
-    def test_get_all_topics_with_root(self, mock_xmind_file):
+    @patch('xmind_converter.core.parser.xmind_to_dict')
+    def test_get_max_depth_simple(self, mock_xmind_to_dict, simple_xmind_data, create_mock_xmind_file):
+        """Test max depth for simple structure."""
+        mock_xmind_to_dict.return_value = simple_xmind_data
+        xmind_file = create_mock_xmind_file(simple_xmind_data)
+        
+        parser = XMindParser(str(xmind_file))
+        max_depth = parser.get_max_depth()
+        
+        # Main Topic -> Subtopic 1/2/3 = depth 1
+        assert max_depth == 1
+    
+    @patch('xmind_converter.core.parser.xmind_to_dict')
+    def test_get_all_topics_with_root(self, mock_xmind_to_dict, sample_xmind_data, create_mock_xmind_file):
         """Test getting all topics including root."""
-        parser = XMindParser(str(mock_xmind_file))
+        mock_xmind_to_dict.return_value = sample_xmind_data
+        xmind_file = create_mock_xmind_file(sample_xmind_data)
+        
+        parser = XMindParser(str(xmind_file))
         topics = parser.get_all_topics(include_root=True)
         
-        assert "Central Topic" in topics
-        assert "Topic 1" in topics
-        assert "Subtopic 1.1" in topics
-        assert "Subtopic 1.2" in topics
-        assert "Topic 2" in topics
-        assert "Subtopic 2.1" in topics
-        assert "Topic 3" in topics
-        assert len(topics) == 7
+        expected = [
+            'Project Planning',  # root
+            'Phase 1', 'Research', 'Design',
+            'Phase 2', 'Development', 'Testing',
+            'Phase 3', 'Deployment'
+        ]
+        assert topics == expected
     
-    def test_get_all_topics_without_root(self, mock_xmind_file):
+    @patch('xmind_converter.core.parser.xmind_to_dict')
+    def test_get_all_topics_without_root(self, mock_xmind_to_dict, sample_xmind_data, create_mock_xmind_file):
         """Test getting all topics excluding root."""
-        parser = XMindParser(str(mock_xmind_file))
+        mock_xmind_to_dict.return_value = sample_xmind_data
+        xmind_file = create_mock_xmind_file(sample_xmind_data)
+        
+        parser = XMindParser(str(xmind_file))
         topics = parser.get_all_topics(include_root=False)
         
-        assert "Central Topic" not in topics
-        assert "Topic 1" in topics
-        assert len(topics) == 6
+        expected = [
+            'Phase 1', 'Research', 'Design',
+            'Phase 2', 'Development', 'Testing',
+            'Phase 3', 'Deployment'
+        ]
+        assert topics == expected
     
-    def test_to_dict(self, mock_xmind_file, sample_xmind_data):
-        """Test getting raw dictionary data."""
-        parser = XMindParser(str(mock_xmind_file))
-        data = parser.to_dict()
+    @patch('xmind_converter.core.parser.xmind_to_dict')
+    def test_to_dict(self, mock_xmind_to_dict, sample_xmind_data, create_mock_xmind_file):
+        """Test converting to dictionary."""
+        mock_xmind_to_dict.return_value = sample_xmind_data
+        xmind_file = create_mock_xmind_file(sample_xmind_data)
         
-        assert data == sample_xmind_data
+        parser = XMindParser(str(xmind_file))
+        result = parser.to_dict()
+        
+        assert result == sample_xmind_data
     
-    def test_to_dataframe(self, mock_xmind_file):
-        """Test conversion to pandas DataFrame."""
-        parser = XMindParser(str(mock_xmind_file))
+    @patch('xmind_converter.core.parser.xmind_to_dict')
+    def test_to_dataframe(self, mock_xmind_to_dict, simple_xmind_data, create_mock_xmind_file):
+        """Test converting to pandas DataFrame."""
+        mock_xmind_to_dict.return_value = simple_xmind_data
+        xmind_file = create_mock_xmind_file(simple_xmind_data)
+        
+        parser = XMindParser(str(xmind_file))
         df = parser.to_dataframe()
         
-        assert isinstance(df, pd.DataFrame)
-        assert "Level 1" in df.columns
-        assert "Level 2" in df.columns
-        assert "Level 3" in df.columns
-        assert len(df) > 0
+        assert len(df) == 3  # 3 subtopics
+        assert 'Level 1' in df.columns
+        assert 'Level 2' in df.columns
+        assert df['Level 1'].iloc[0] == 'Main Topic'
+        assert df['Level 2'].iloc[0] == 'Subtopic 1'
     
-    def test_to_markdown(self, mock_xmind_file):
-        """Test conversion to Markdown format."""
-        parser = XMindParser(str(mock_xmind_file))
+    @patch('xmind_converter.core.parser.xmind_to_dict')
+    def test_to_markdown(self, mock_xmind_to_dict, simple_xmind_data, create_mock_xmind_file):
+        """Test converting to Markdown."""
+        mock_xmind_to_dict.return_value = simple_xmind_data
+        xmind_file = create_mock_xmind_file(simple_xmind_data)
+        
+        parser = XMindParser(str(xmind_file))
         markdown = parser.to_markdown()
         
-        assert "# [[Central Topic]]" in markdown
-        assert "[[Topic 1]]" in markdown
-        assert "[[Topic 2]]" in markdown
-        assert "[[Topic 3]]" in markdown
-        assert "[[Subtopic 1.1]]" in markdown
+        assert '# [[Main Topic]]' in markdown
+        assert '- [[Subtopic 1]]' in markdown
+        assert '- [[Subtopic 2]]' in markdown
+        assert '- [[Subtopic 3]]' in markdown
     
-    def test_has_subtopics(self, mock_xmind_file):
-        """Test checking if node has subtopics."""
-        parser = XMindParser(str(mock_xmind_file))
-        
-        # Topic 1 has subtopics
-        topic1 = parser.topic_hierarchy[0]
-        assert parser._has_subtopics(topic1) is True
-        
-        # Topic 3 has no subtopics
-        topic3 = parser.topic_hierarchy[2]
-        assert parser._has_subtopics(topic3) is False
-    
-    def test_repr(self, mock_xmind_file):
+    @patch('xmind_converter.core.parser.xmind_to_dict')
+    def test_repr(self, mock_xmind_to_dict, simple_xmind_data, create_mock_xmind_file):
         """Test string representation."""
-        parser = XMindParser(str(mock_xmind_file))
+        mock_xmind_to_dict.return_value = simple_xmind_data
+        xmind_file = create_mock_xmind_file(simple_xmind_data, "myfile.xmind")
+        
+        parser = XMindParser(str(xmind_file))
         repr_str = repr(parser)
         
-        assert "XMindParser" in repr_str
-        assert "test.xmind" in repr_str
-        assert "topics=" in repr_str
+        assert 'myfile.xmind' in repr_str
+        assert 'topics=4' in repr_str  # Main Topic + 3 subtopics

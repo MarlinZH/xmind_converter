@@ -1,84 +1,168 @@
-"""Pytest configuration and shared fixtures."""
+"""
+Pytest configuration and shared fixtures.
+"""
 import pytest
 import tempfile
-import json
+import shutil
 from pathlib import Path
-from unittest.mock import MagicMock, Mock
-
-
-@pytest.fixture
-def sample_xmind_data():
-    """Mock XMind data structure for testing."""
-    return [
-        {
-            "title": "Test Mind Map",
-            "topic": {
-                "title": "Central Topic",
-                "topics": [
-                    {
-                        "title": "Topic 1",
-                        "topics": [
-                            {"title": "Subtopic 1.1"},
-                            {"title": "Subtopic 1.2"},
-                        ],
-                    },
-                    {
-                        "title": "Topic 2",
-                        "topics": [
-                            {"title": "Subtopic 2.1"},
-                        ],
-                    },
-                    {"title": "Topic 3"},
-                ],
-            },
-        }
-    ]
+import json
+import zipfile
 
 
 @pytest.fixture
 def temp_dir():
     """Create a temporary directory for test outputs."""
-    with tempfile.TemporaryDirectory() as tmpdir:
-        yield Path(tmpdir)
+    tmpdir = tempfile.mkdtemp()
+    yield Path(tmpdir)
+    shutil.rmtree(tmpdir)
 
 
 @pytest.fixture
-def mock_xmind_file(tmp_path, sample_xmind_data, monkeypatch):
-    """Create a mock XMind file for testing."""
-    xmind_file = tmp_path / "test.xmind"
-    xmind_file.touch()  # Create empty file
+def sample_xmind_data():
+    """Sample XMind data structure."""
+    return [{
+        "title": "Root Topic",
+        "topic": {
+            "title": "Project Planning",
+            "topics": [
+                {
+                    "title": "Phase 1",
+                    "topics": [
+                        {"title": "Research"},
+                        {"title": "Design"}
+                    ]
+                },
+                {
+                    "title": "Phase 2",
+                    "topics": [
+                        {"title": "Development"},
+                        {"title": "Testing"}
+                    ]
+                },
+                {
+                    "title": "Phase 3",
+                    "topics": [
+                        {"title": "Deployment"}
+                    ]
+                }
+            ]
+        }
+    }]
+
+
+@pytest.fixture
+def simple_xmind_data():
+    """Simple XMind data structure for basic tests."""
+    return [{
+        "title": "Simple Root",
+        "topic": {
+            "title": "Main Topic",
+            "topics": [
+                {"title": "Subtopic 1"},
+                {"title": "Subtopic 2"},
+                {"title": "Subtopic 3"}
+            ]
+        }
+    }]
+
+
+@pytest.fixture
+def create_mock_xmind_file(temp_dir):
+    """Factory fixture to create mock .xmind files."""
+    def _create_file(data, filename="test.xmind"):
+        """
+        Create a mock .xmind file.
+        
+        Args:
+            data: XMind data structure
+            filename: Name of the file to create
+            
+        Returns:
+            Path to the created file
+        """
+        file_path = temp_dir / filename
+        
+        # Create a minimal valid .xmind file (it's a zip with JSON)
+        with zipfile.ZipFile(file_path, 'w') as zf:
+            # XMind files contain content.json
+            content = json.dumps(data, indent=2)
+            zf.writestr('content.json', content)
+            
+            # Add manifest.json
+            manifest = {
+                "file-entries": {
+                    "content.json": {},
+                    "metadata.json": {}
+                }
+            }
+            zf.writestr('manifest.json', json.dumps(manifest))
+            
+            # Add metadata.json
+            metadata = {
+                "creator": {
+                    "name": "Test Suite",
+                    "version": "1.0.0"
+                }
+            }
+            zf.writestr('metadata.json', json.dumps(metadata))
+        
+        return file_path
     
-    # Mock xmind_to_dict to return our sample data
-    def mock_xmind_to_dict(file_path):
-        return sample_xmind_data
-    
-    import xmind_converter.core.parser
-    monkeypatch.setattr(
-        xmind_converter.core.parser,
-        "xmind_to_dict",
-        mock_xmind_to_dict
-    )
-    
-    return xmind_file
+    return _create_file
 
 
 @pytest.fixture
 def mock_notion_client():
     """Mock Notion client for testing."""
-    client = MagicMock()
-    client.databases.query.return_value = {"results": []}
-    client.pages.create.return_value = {
-        "id": "test-page-id",
-        "url": "https://notion.so/test-page"
-    }
-    return client
+    class MockNotionClient:
+        def __init__(self):
+            self.pages_created = []
+            
+        def pages(self):
+            return self
+            
+        def create(self, **kwargs):
+            """Mock page creation."""
+            page = {
+                'id': f'mock-page-{len(self.pages_created)}',
+                'properties': kwargs.get('properties', {}),
+                'parent': kwargs.get('parent', {})
+            }
+            self.pages_created.append(page)
+            return page
+    
+    return MockNotionClient()
 
 
 @pytest.fixture
 def mock_neo4j_driver():
     """Mock Neo4j driver for testing."""
-    driver = MagicMock()
-    session = MagicMock()
-    driver.session.return_value.__enter__.return_value = session
-    driver.verify_connectivity.return_value = None
-    return driver
+    class MockSession:
+        def __init__(self):
+            self.queries_run = []
+            
+        def run(self, query, **params):
+            self.queries_run.append({'query': query, 'params': params})
+            return self
+            
+        def close(self):
+            pass
+            
+        def __enter__(self):
+            return self
+            
+        def __exit__(self, *args):
+            pass
+    
+    class MockDriver:
+        def __init__(self):
+            self.session_obj = MockSession()
+            self.closed = False
+            
+        def session(self):
+            return self.session_obj
+            
+        def close(self):
+            self.closed = True
+    
+    return MockDriver()

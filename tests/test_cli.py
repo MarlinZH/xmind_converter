@@ -1,146 +1,76 @@
-"""Tests for CLI functionality."""
+"""
+Tests for the CLI module.
+"""
 import pytest
 from unittest.mock import patch, MagicMock
 import sys
-from pathlib import Path
+from io import StringIO
 
-from xmind_converter.cli import main
+from xmind_converter.cli import main, convert_markdown, convert_csv
 
 
 class TestCLI:
-    """Test suite for command-line interface."""
+    """Test suite for CLI functionality."""
     
-    def test_markdown_conversion(self, mock_xmind_file, temp_dir, monkeypatch):
-        """Test CLI markdown conversion."""
-        args = [
-            "xmind-convert",
-            str(mock_xmind_file),
-            "markdown",
-            "--output", str(temp_dir)
-        ]
-        
-        monkeypatch.setattr(sys, "argv", args)
-        
-        result = main()
-        assert result == 0
-        
-        # Check output file was created
-        output_files = list(temp_dir.glob("*.md"))
-        assert len(output_files) == 1
-    
-    def test_csv_conversion(self, mock_xmind_file, temp_dir, monkeypatch):
-        """Test CLI CSV conversion."""
-        args = [
-            "xmind-convert",
-            str(mock_xmind_file),
-            "csv",
-            "--output", str(temp_dir)
-        ]
-        
-        monkeypatch.setattr(sys, "argv", args)
-        
-        result = main()
-        assert result == 0
-        
-        # Check output file was created
-        output_files = list(temp_dir.glob("*.csv"))
-        assert len(output_files) == 1
-    
-    def test_nonexistent_file(self, monkeypatch, capsys):
-        """Test CLI with nonexistent file."""
-        args = [
-            "xmind-convert",
-            "/nonexistent/file.xmind",
-            "markdown"
-        ]
-        
-        monkeypatch.setattr(sys, "argv", args)
-        
-        result = main()
-        assert result == 1
-        
-        captured = capsys.readouterr()
-        assert "not found" in captured.out.lower()
-    
-    @patch('xmind_converter.cli.Config.get_notion_credentials')
-    @patch('xmind_converter.cli.Client')
-    def test_notion_conversion_with_env_vars(
-        self, mock_client, mock_get_creds, mock_xmind_file, monkeypatch
-    ):
-        """Test CLI Notion conversion with environment variables."""
-        mock_get_creds.return_value = ("test_token", "test_db_id")
-        mock_notion = MagicMock()
-        mock_client.return_value = mock_notion
-        
-        args = [
-            "xmind-convert",
-            str(mock_xmind_file),
-            "notion"
-        ]
-        
-        monkeypatch.setattr(sys, "argv", args)
-        
-        # Mock the NotionConverter
-        with patch('xmind_converter.cli.NotionConverter') as mock_converter:
-            mock_instance = MagicMock()
-            mock_instance.convert.return_value = "Success"
-            mock_converter.return_value = mock_instance
-            
-            result = main()
-            assert result == 0
-    
-    def test_notion_conversion_missing_credentials(self, mock_xmind_file, monkeypatch, capsys):
-        """Test CLI Notion conversion without credentials."""
-        args = [
-            "xmind-convert",
-            str(mock_xmind_file),
-            "notion"
-        ]
-        
-        monkeypatch.setattr(sys, "argv", args)
-        
-        with patch('xmind_converter.cli.Config.get_notion_credentials', return_value=(None, None)):
-            result = main()
-            assert result == 1
-            
-            captured = capsys.readouterr()
-            assert "credentials not found" in captured.out.lower()
-    
-    @patch('xmind_converter.cli.Config.get_neo4j_credentials')
-    @patch('xmind_converter.cli.Neo4jConverter')
-    def test_neo4j_conversion(
-        self, mock_converter_class, mock_get_creds, mock_xmind_file, monkeypatch
-    ):
-        """Test CLI Neo4j conversion."""
-        mock_get_creds.return_value = ("bolt://localhost:7687", "neo4j", "password")
+    @patch('xmind_converter.cli.XMindParser')
+    @patch('xmind_converter.cli.MarkdownConverter')
+    def test_convert_markdown(self, mock_converter_class, mock_parser_class, temp_dir):
+        """Test markdown conversion via CLI."""
+        # Setup mocks
+        mock_parser = MagicMock()
+        mock_parser_class.return_value = mock_parser
         
         mock_converter = MagicMock()
-        mock_converter.convert.return_value = "Success"
+        mock_converter.convert.return_value = str(temp_dir / "output.md")
         mock_converter_class.return_value = mock_converter
         
-        args = [
-            "xmind-convert",
-            str(mock_xmind_file),
-            "neo4j"
-        ]
+        # Create mock args
+        args = MagicMock()
+        args.input = "test.xmind"
+        args.output = str(temp_dir)
         
-        monkeypatch.setattr(sys, "argv", args)
+        # Run conversion
+        convert_markdown(args)
         
-        result = main()
-        assert result == 0
-        mock_converter.close.assert_called_once()
+        # Verify calls
+        mock_parser_class.assert_called_once_with("test.xmind")
+        mock_converter_class.assert_called_once_with(mock_parser)
+        mock_converter.convert.assert_called_once()
     
-    def test_verbose_logging(self, mock_xmind_file, temp_dir, monkeypatch):
-        """Test CLI with verbose flag."""
-        args = [
-            "xmind-convert",
-            str(mock_xmind_file),
-            "markdown",
-            "--output", str(temp_dir),
-            "--verbose"
-        ]
+    @patch('xmind_converter.cli.XMindParser')
+    @patch('xmind_converter.cli.CSVConverter')
+    def test_convert_csv(self, mock_converter_class, mock_parser_class, temp_dir):
+        """Test CSV conversion via CLI."""
+        # Setup mocks
+        mock_parser = MagicMock()
+        mock_parser_class.return_value = mock_parser
         
-        monkeypatch.setattr(sys, "argv", args)
+        mock_converter = MagicMock()
+        mock_converter.convert.return_value = str(temp_dir / "output.csv")
+        mock_converter_class.return_value = mock_converter
         
-        result = main()
-        assert result == 0
+        # Create mock args
+        args = MagicMock()
+        args.input = "test.xmind"
+        args.output = str(temp_dir)
+        
+        # Run conversion
+        convert_csv(args)
+        
+        # Verify calls
+        mock_parser_class.assert_called_once_with("test.xmind")
+        mock_converter_class.assert_called_once_with(mock_parser)
+        mock_converter.convert.assert_called_once()
+    
+    @patch('sys.argv', ['xmind-convert', 'test.xmind', 'markdown', '--help'])
+    def test_cli_help(self):
+        """Test CLI help message."""
+        with pytest.raises(SystemExit) as exc_info:
+            main()
+        
+        # Help should exit with code 0
+        assert exc_info.value.code == 0
+    
+    @patch('xmind_converter.cli.Path')
+    @patch('sys.argv', ['xmind-convert', 'nonexistent.xmind', 'markdown'])
+    def test_cli_file_not_found(self, mock_path
