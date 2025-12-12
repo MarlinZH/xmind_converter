@@ -2,7 +2,7 @@
 
 A professional Python package to convert XMind mind maps into multiple formats (Markdown, CSV, Notion, Neo4j) with a unified command-line interface.
 
-## ✨ Features
+# ✨ Features
 
 - **Single Command Interface** - One `xmind-convert` command for all formats
 - **Multiple Output Formats**
