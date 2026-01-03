@@ -87,12 +87,3 @@ output/
 *.tmp
 *.bak
 temp/
-
-# Legacy files (will be removed)
-main.py
-config.py
-xmind_parser.py
-xmind_to_notion.py
-xmind_to_neo4j.py
-xmind_unzip.py
-notion_connector.py
